@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#020611" />
+    <meta
+      name="description"
+      content="COSMIHEALTH anatomy lab — a standalone interactive body explorer for spaceflight health education."
+    />
+    <title>COSMIHEALTH — Anatomy Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=8" />
+    <script defer src="app.js?v=9"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas class="starfield" id="starfield" aria-hidden="true"></canvas>
+
+    <header class="topbar">
+      <div class="top-status">
+        <span class="status-orb"></span><span class="mono">CREW SUPPORT<br />SIMULATION</span>
+      </div>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="home.html">Home</a>
+        <a href="bio.html">Healthy Hub</a>
+        <a class="brand-logo" href="index1.html#section-1" aria-label="COSMIHEALTH home">COSMIHEALTH</a>
+        <a href="emergency-ai.html">Emergency AI</a>
+        <a href="ai-men.html">AI-Mental</a>
+        <a href="anatomy.html">3d</a>
+      </nav>
+      <button class="api-status" id="api-settings" type="button" aria-label="Configure AI pilot connection">
+        <span class="api-status-dot"></span><span id="api-status-text">SIM MODE</span><span class="mono">↗</span>
+      </button>
+      <button class="menu-toggle" aria-expanded="false" aria-label="Open navigation">☰</button>
+    </header>
+
+    <main id="main-content">
+      <section class="body-explorer-section section-wrap" id="body-explorer" aria-labelledby="body-explorer-heading">
+        <div class="section-top">
+          <div class="eyebrow">
+            <span class="eyebrow-line"></span> SPACE MEDICINE RESEARCH
+            <span class="eyebrow-slash">/</span> 04 · 3D HUMAN BODY EXPLORER
+          </div>
+          <span class="mono demo-chip">EDUCATIONAL VIEW · NOT A DIAGNOSTIC TOOL</span>
+        </div>
+        <div class="heading-row body-explorer-heading">
+          <div>
+            <h2 id="body-explorer-heading">The human system<span class="cyan">.</span></h2>
+            <p class="section-summary">
+              Explore an interactive anatomical model and NASA-linked research on how the space
+              environment can affect different body systems. Findings vary, and some questions
+              remain under study.
+            </p>
+          </div>
+          <span class="mono body-explorer-model-note">ANATOMY MODEL · INTERACTIVE 3D</span>
+        </div>
+
+        <div class="body-explorer-layout">
+          <article class="body-explorer-viewer glass-panel" aria-label="Interactive anatomy viewer">
+            <div class="body-explorer-viewer-top">
+              <div class="body-explorer-mode" role="group" aria-label="Anatomy view">
+                <button
+                  class="body-explorer-mode-button is-active"
+                  type="button"
+                  data-anatomy-mode="external"
+                  aria-pressed="true"
+                >
+                  <span class="mono">01</span> External
+                </button>
+                <button
+                  class="body-explorer-mode-button"
+                  type="button"
+                  data-anatomy-mode="internal"
+                  aria-pressed="false"
+                >
+                  <span class="mono">02</span> Internal organs
+                </button>
+              </div>
+              <div class="body-explorer-view-tools" aria-label="3D model controls">
+                <button
+                  class="body-explorer-tool"
+                  type="button"
+                  data-anatomy-action="rotate"
+                  aria-pressed="false"
+                  aria-label="Toggle automatic rotation"
+                  title="Toggle automatic rotation"
+                >
+                  <span aria-hidden="true">⟳</span>
+                </button>
+                <button
+                  class="body-explorer-tool"
+                  type="button"
+                  data-anatomy-action="zoom-in"
+                  aria-label="Zoom in"
+                  title="Zoom in"
+                >
+                  <span aria-hidden="true">+</span>
+                </button>
+                <button
+                  class="body-explorer-tool"
+                  type="button"
+                  data-anatomy-action="zoom-out"
+                  aria-label="Zoom out"
+                  title="Zoom out"
+                >
+                  <span aria-hidden="true">−</span>
+                </button>
+                <button
+                  class="body-explorer-tool"
+                  type="button"
+                  data-anatomy-action="reset"
+                  aria-label="Reset model view"
+                  title="Reset model view"
+                >
+                  <span aria-hidden="true">⌂</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="body-explorer-stage" id="body-explorer-stage">
+              <div class="body-explorer-grid" aria-hidden="true"></div>
+              <div class="body-explorer-loading" id="body-explorer-loading" role="status">
+                <span class="body-explorer-loader-orbit" aria-hidden="true"></span>
+                <strong id="body-explorer-status">Preparing anatomy viewer</strong>
+                <span id="body-explorer-status-detail">The model loads when this section is opened.</span>
+                <button class="body-explorer-retry hidden" type="button" data-anatomy-action="retry">
+                  Retry 3D loading
+                </button>
+              </div>
+              <canvas
+                id="body-explorer-canvas"
+                class="body-explorer-canvas"
+                aria-label="Interactive 3D human anatomy model. Drag to rotate and use the mouse wheel to zoom."
+              ></canvas>
+              <div class="body-explorer-axis mono" aria-hidden="true">
+                <span>ANTERIOR</span><i></i><span>POSTERIOR</span>
+              </div>
+              <div class="body-explorer-coordinates mono" aria-hidden="true">
+                <span>ORBIT CARE / ANATOMY LAB</span><span id="body-explorer-part-count">MODEL LOADING</span>
+              </div>
+              <div class="body-explorer-controls-hint mono">
+                DRAG TO ROTATE <span>·</span> SCROLL TO ZOOM <span>·</span> CLICK A STRUCTURE
+              </div>
+            </div>
+
+            <div class="body-explorer-parts" id="body-explorer-parts" aria-label="Choose a body system">
+              <span class="mono body-explorer-parts-label">SELECT A SYSTEM</span>
+              <button class="body-explorer-part" type="button" data-anatomy-part="brain" aria-pressed="false">Brain</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="eyes" aria-pressed="false">Eyes</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="heart" aria-pressed="false">Heart</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="lungs" aria-pressed="false">Lungs</button>
+              <button class="body-explorer-part is-selected" type="button" data-anatomy-part="bones" aria-pressed="true">Bones</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="muscles" aria-pressed="false">Muscles</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="spine" aria-pressed="false">Spine</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="kidneys" aria-pressed="false">Kidneys</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="liver" aria-pressed="false">Liver</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="digestive" aria-pressed="false">Digestive</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="immune" aria-pressed="false">Immune</button>
+              <button class="body-explorer-part" type="button" data-anatomy-part="vestibular" aria-pressed="false">Vestibular</button>
+            </div>
+          </article>
+
+          <aside class="body-explorer-info glass-panel" aria-live="polite">
+            <div class="body-explorer-info-top">
+              <span class="mono body-explorer-info-kicker">SPACEFLIGHT HEALTH BRIEF</span>
+              <span class="body-explorer-evidence" id="body-explorer-evidence">RESEARCH CONTEXT</span>
+            </div>
+            <div class="body-explorer-organ-heading">
+              <span class="body-explorer-organ-index mono" id="body-explorer-organ-index">01</span>
+              <div>
+                <h3 id="body-explorer-organ-name">Brain &amp; nervous system</h3>
+                <p id="body-explorer-organ-system">CENTRAL NERVOUS SYSTEM</p>
+              </div>
+            </div>
+            <div class="body-explorer-overview-block">
+              <span class="mono body-explorer-fact-title">01 / ORGAN OVERVIEW</span>
+              <p class="body-explorer-overview" id="body-explorer-overview"></p>
+            </div>
+            <div class="body-explorer-facts" id="body-explorer-facts"></div>
+            <div class="body-explorer-sources">
+              <div class="body-explorer-sources-title">
+                <span class="mono">RESEARCH REFERENCES</span>
+                <span class="body-explorer-source-mark" aria-hidden="true">↗</span>
+              </div>
+              <div class="body-explorer-source-list" id="body-explorer-sources"></div>
+            </div>
+            <p class="body-explorer-disclaimer">
+              Educational summaries of published research—not individual medical advice, diagnosis,
+              or mission procedures. “Symptoms” are possible observations, not proof of a condition.
+              Follow qualified mission medical personnel and established protocols.
+            </p>
+          </aside>
+        </div>
+        <div class="body-explorer-attribution">
+          <p>
+            Anatomy geometry: BodyParts3D, © The Database Center for Life Science, CC BY-SA 2.1 JP;
+            mixed and modified by Z-Anatomy. The translucent outer-body silhouette is schematic;
+            the selectable internal meshes are the credited anatomical geometry.
+          </p>
+          <a href="assets/body-model/ATTRIBUTION.txt" target="_blank" rel="noopener noreferrer">
+            Model attribution &amp; license <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <video
+        class="footer-bg-media"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="none"
+        poster="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&amp;fit=crop&amp;w=2022&amp;q=85"
+        aria-label="NASA imagery of Earth from orbit"
+      >
+        <source
+          src="https://images-assets.nasa.gov/video/Earth%20Views%20from%20the%20International%20Space%20Station/Earth%20Views%20from%20the%20International%20Space%20Station~small.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <div class="footer-dark-overlay"></div>
+      <div class="footer-container">
+        <div class="footer-content-row">
+          <div class="footer-col footer-left">
+            <h3 class="footer-logo">COSMIHEALTH</h3>
+            <p class="footer-desc">
+              A human-centered astronaut psychological-wellbeing and resilience prototype, with a privacy-conscious AI conversation simulation.
+            </p>
+            <span class="footer-unaffiliated mono">INDEPENDENT DEMONSTRATION · NOT AFFILIATED WITH NASA</span>
+          </div>
+          <div class="footer-col footer-center">
+            <div class="footer-emblem">
+              <div class="medical-star-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2v20M2 12h20"></path>
+                </svg>
+              </div>
+              <span class="emblem-title">Cosmic Vision</span>
+            </div>
+            <p class="emblem-sub">Crew Resilience &amp; Human Factors</p>
+          </div>
+          <div class="footer-col footer-right">
+            <div class="footer-nav-group">
+              <h4>Navigation</h4>
+              <ul>
+                <li><a href="index1.html#section-1">Home</a></li>
+                <li><a href="index1.html#section-2">Wellness check-in</a></li>
+                <li><a href="anatomy.html">3D body lab</a></li>
+                <li><a href="index1.html#training">Practice scenarios</a></li>
+                <li><a href="index1.html#agents">ASTRA AI Pilot</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <p class="footer-copy">&copy; 2026 COSMIHEALTH. Educational demonstration only.</p>
+          <p class="footer-team">Supportive technology. <span>Human care first.</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <dialog class="app-dialog" id="app-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-top">
+        <span class="dialog-kicker mono" id="dialog-kicker">OPTIONAL PRACTICE</span>
+        <button class="dialog-close" type="button" aria-label="Close dialog">×</button>
+      </div>
+      <div id="dialog-content"><h2 class="sr-only" id="dialog-title">Dialog</h2></div>
+    </dialog>
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+    <script type="module" src="body-explorer.js"></script>
+  </body>
+</html>

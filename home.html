@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CosmiHealth</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: #020407;
+        color: #fff;
+        font-family: "Inter", Arial, sans-serif;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      /* ================= KEYFRAME SPACE ANIMATIONS ================= */
+      @keyframes zeroGFloat {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        35% {
+          transform: translateY(-7px) rotate(0.6deg);
+        }
+        70% {
+          transform: translateY(4px) rotate(-0.5deg);
+        }
+      }
+
+      @keyframes zeroGFloatAlt {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        40% {
+          transform: translateY(6px) rotate(-0.6deg);
+        }
+        75% {
+          transform: translateY(-6px) rotate(0.5deg);
+        }
+      }
+
+      @keyframes cosmicTextReveal {
+        0% {
+          opacity: 0;
+          transform: translateY(24px);
+          filter: blur(8px);
+          letter-spacing: 3px;
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+          letter-spacing: 0.2px;
+        }
+      }
+
+      @keyframes fadeSlideUp {
+        0% {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes titleCosmicGlow {
+        0%,
+        100% {
+          text-shadow:
+            0 2px 12px rgba(0, 0, 0, 0.6),
+            0 0 18px rgba(29, 187, 255, 0.15);
+        }
+        50% {
+          text-shadow:
+            0 2px 14px rgba(0, 0, 0, 0.7),
+            0 0 28px rgba(29, 187, 255, 0.42);
+        }
+      }
+
+      @keyframes sideLetterWave {
+        0%,
+        100% {
+          opacity: 0.45;
+          color: rgba(255, 255, 255, 0.75);
+          transform: translateX(0);
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+        }
+        50% {
+          opacity: 1;
+          color: #42c8ff;
+          transform: translateX(-4px);
+          text-shadow: 0 0 12px rgba(29, 187, 255, 0.85);
+        }
+      }
+
+      @keyframes bottomTelemetryPulse {
+        0%,
+        100% {
+          opacity: 0.55;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        50% {
+          opacity: 0.95;
+          text-shadow:
+            0 2px 10px rgba(0, 0, 0, 0.9),
+            0 0 14px rgba(29, 187, 255, 0.45);
+        }
+      }
+
+      @keyframes redAlertPulse {
+        0%,
+        100% {
+          opacity: 1;
+          text-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+        50% {
+          opacity: 0.55;
+          text-shadow: 0 0 18px rgba(239, 68, 68, 0.95);
+        }
+      }
+
+      @keyframes orbitalBgDrift {
+        0% {
+          transform: scale(1.02) translate(0px, 0px);
+        }
+        50% {
+          transform: scale(1.07) translate(-8px, -5px);
+        }
+        100% {
+          transform: scale(1.02) translate(0px, 0px);
+        }
+      }
+
+      @keyframes emblemOrbitPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 18px 4px rgba(56, 189, 248, 0.25);
+        }
+      }
+
+      /* ================= HERO SECTION ================= */
+      .hero {
+        position: relative;
+        display: flex;
+        min-height: 100vh;
+        min-height: 100svh;
+        align-items: center;
+        overflow: hidden;
+        isolation: isolate;
+        background: #020407;
+      }
+
+      .background-video {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        opacity: 1;
+        filter: brightness(0.95) contrast(1.05);
+      }
+
+      .overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:
+          linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.58) 0%,
+            rgba(0, 0, 0, 0.38) 35%,
+            rgba(0, 0, 0, 0.14) 72%,
+            rgba(0, 0, 0, 0.18) 100%
+          ),
+          linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.18) 0%,
+            transparent 35%,
+            rgba(0, 0, 0, 0.1) 100%
+          );
+      }
+
+      .navbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        display: flex;
+        width: 100%;
+        min-height: 116px;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        padding: 20px 4%;
+        animation: fadeSlideUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      .nav-group {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+      }
+
+      .navbar a.nav-link {
+        position: relative;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        transition: color 0.25s ease, text-shadow 0.25s ease;
+      }
+
+      .navbar a.nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        width: 0;
+        height: 1px;
+        background: #42c8ff;
+        box-shadow: 0 0 8px #42c8ff;
+        transition: width 0.3s ease, left 0.3s ease;
+      }
+
+      .navbar a.nav-link:hover {
+        color: #fff;
+        text-shadow: 0 0 10px rgba(66, 200, 255, 0.6);
+      }
+
+      .navbar a.nav-link:hover::after {
+        width: 100%;
+        left: 0;
+      }
+
+      /* COSMI + Logo + HEALTH Lockup in Navbar Center */
+      .brand-logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .brand-lockup {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .brand-text-left,
+      .brand-text-right {
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 5px;
+        white-space: nowrap;
+        text-shadow: 0 0 16px rgba(29, 187, 255, 0.5);
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      .nav-logo {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(56, 189, 248, 0.75);
+        box-shadow:
+          0 0 18px rgba(56, 189, 248, 0.45),
+          inset 0 0 10px rgba(56, 189, 248, 0.3);
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+      }
+
+      .brand-lockup:hover .nav-logo {
+        transform: scale(1.08) rotate(6deg);
+        box-shadow: 0 0 26px rgba(56, 189, 248, 0.85);
+      }
+
+      .brand-lockup:hover .brand-text-left,
+      .brand-lockup:hover .brand-text-right {
+        color: #7dd3fc;
+        text-shadow: 0 0 22px rgba(66, 200, 255, 0.85);
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        width: min(660px, 58%);
+        margin: 105px 0 0 2.7%;
+      }
+
+      .hero-content h1 {
+        max-width: 620px;
+        margin-bottom: 20px;
+        font-size: clamp(32px, 3.25vw, 48px);
+        font-weight: 800;
+        line-height: 1.28;
+        letter-spacing: 0.2px;
+        animation:
+          cosmicTextReveal 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both,
+          titleCosmicGlow 5s ease-in-out 1.3s infinite;
+      }
+
+      .hero-content p {
+        max-width: 600px;
+        margin-bottom: 32px;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 16px;
+        line-height: 1.65;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+        animation: fadeSlideUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+      }
+
+      .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        animation: fadeSlideUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+      }
+
+      /* Floating Zero-G Buttons */
+      .button,
+      .cosmi-strip-btn,
+      .emergency-strip-btn,
+      .mental-strip-btn {
+        position: relative;
+        overflow: hidden;
+        will-change: transform;
+      }
+
+      .button::before,
+      .cosmi-strip-btn::before,
+      .emergency-strip-btn::before,
+      .mental-strip-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 70%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.22),
+          transparent
+        );
+        transform: skewX(-22deg);
+        transition: left 0.65s ease;
+      }
+
+      .button:hover::before,
+      .cosmi-strip-btn:hover::before,
+      .emergency-strip-btn:hover::before,
+      .mental-strip-btn:hover::before {
+        left: 140%;
+      }
+
+      .button {
+        display: inline-flex;
+        min-width: 250px;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        background: rgba(5, 12, 21, 0.58);
+        backdrop-filter: blur(4px);
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        transition:
+          border-color 0.25s ease,
+          background 0.25s ease,
+          box-shadow 0.25s ease;
+        animation: zeroGFloatAlt 6.2s ease-in-out infinite;
+      }
+
+      .button.primary {
+        border-color: #1dbbff;
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.45),
+          0 0 16px rgba(29, 187, 255, 0.22);
+        animation: zeroGFloat 5.6s ease-in-out infinite;
+      }
+
+      .button:hover {
+        animation-play-state: paused;
+        border-color: #42c8ff;
+        background: rgba(17, 91, 128, 0.72);
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.55),
+          0 0 22px rgba(66, 200, 255, 0.55);
+      }
+
+      .side-label {
+        position: absolute;
+        top: 50%;
+        right: 2.5%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.88);
+        font-family: "Orbitron", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+      }
+
+      .side-label span {
+        text-align: center;
+        animation: sideLetterWave 3.6s ease-in-out infinite;
+      }
+
+      .side-label span:nth-child(1) { animation-delay: 0.1s; }
+      .side-label span:nth-child(2) { animation-delay: 0.25s; }
+      .side-label span:nth-child(3) { animation-delay: 0.4s; }
+      .side-label span:nth-child(4) { animation-delay: 0.55s; }
+      .side-label span:nth-child(5) { animation-delay: 0.7s; }
+      .side-label span:nth-child(6) { animation-delay: 0.85s; }
+      .side-label span:nth-child(7) { animation-delay: 1s; }
+      .side-label span:nth-child(8) { animation-delay: 1.15s; }
+      .side-label span:nth-child(9) { animation-delay: 1.3s; }
+      .side-label span:nth-child(10) { animation-delay: 1.45s; }
+
+      .bottom-text {
+        position: absolute;
+        right: 10px;
+        bottom: 40px;
+        left: 10px;
+        color: rgba(255, 255, 255, 0.7);
+        font-family: "Orbitron", sans-serif;
+        font-size: clamp(10px, 1.1vw, 16px);
+        font-weight: 600;
+        letter-spacing: clamp(4px, 0.8vw, 12px);
+        text-align: center;
+        animation: bottomTelemetryPulse 4.5s ease-in-out infinite;
+      }
+
+      /* ================= SCROLL REVEAL UTILITY ================= */
+      .reveal-block {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .reveal-block.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ================= SEAMLESS STRIP ================= */
+      .cosmi-strip {
+        position: relative;
+        width: 100%;
+        min-height: 453px;
+        overflow: hidden;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        background: #020407;
+      }
+
+      .cosmi-strip-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -3;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 42%;
+        filter: brightness(0.95) contrast(1.05);
+        animation: orbitalBgDrift 24s ease-in-out infinite;
+      }
+
+      .cosmi-strip-stars {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2.5px 2.5px at 25px 35px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(3px 3px at 70px 90px, #1dbbff, rgba(0, 0, 0, 0)),
+          radial-gradient(2px 2px at 140px 60px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(2.5px 2.5px at 220px 140px, #7dd3fc, rgba(0, 0, 0, 0)),
+          radial-gradient(3px 3px at 310px 90px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(2px 2px at 400px 180px, #1dbbff, rgba(0, 0, 0, 0)),
+          radial-gradient(2.5px 2.5px at 460px 70px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(3.5px 3.5px at 520px 220px, #7dd3fc, rgba(0, 0, 0, 0));
+        background-repeat: repeat;
+        background-size: 550px 260px;
+        opacity: 0.9;
+        animation: twinkleStars 10s linear infinite;
+      }
+
+      @keyframes twinkleStars {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-25px) scale(1.03);
+          opacity: 0.5;
+        }
+      }
+
+      .cosmi-strip-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          180deg,
+          #020407 0%,
+          rgba(2, 4, 7, 0.1) 40%,
+          rgba(2, 4, 7, 0.85) 85%,
+          #020407 100%
+        );
+      }
+
+      .cosmi-strip-container {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 50px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+
+      .cosmi-strip-text {
+        max-width: 650px;
+      }
+
+      .cosmi-strip-tag {
+        display: inline-block;
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        color: #1dbbff;
+        margin-bottom: 8px;
+        text-shadow: 0 0 10px rgba(29, 187, 255, 0.55);
+      }
+
+      .cosmi-strip-text h2 {
+        font-family: "Orbitron", sans-serif;
+        font-size: clamp(16px, 1.8vw, 22px);
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #fff;
+        margin-bottom: 6px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+      }
+
+      .cosmi-strip-text p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.92);
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+      }
+
+      .cosmi-strip-btn {
+        display: inline-flex;
+        min-width: 210px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(29, 187, 255, 0.7);
+        background: rgba(5, 12, 21, 0.8);
+        backdrop-filter: blur(4px);
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        white-space: nowrap;
+        box-shadow:
+          0 8px 22px rgba(0, 0, 0, 0.55),
+          0 0 14px rgba(29, 187, 255, 0.2);
+        transition:
+          border-color 0.25s ease,
+          background 0.25s ease,
+          box-shadow 0.25s ease;
+        animation: zeroGFloat 5.8s ease-in-out infinite;
+      }
+
+      .cosmi-strip-btn:hover {
+        animation-play-state: paused;
+        border-color: #42c8ff;
+        background: rgba(17, 91, 128, 0.88);
+        box-shadow:
+          0 10px 26px rgba(0, 0, 0, 0.65),
+          0 0 22px rgba(66, 200, 255, 0.6);
+      }
+
+      /* ================= EMERGENCY / RED ALERT STRIP (SECTION 3) ================= */
+      .emergency-strip {
+        position: relative;
+        width: 100%;
+        min-height: 453px;
+        overflow: hidden;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        background: #020407;
+      }
+
+      .emergency-strip-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -3;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 42%;
+        filter: brightness(0.9) contrast(1.1);
+        animation: orbitalBgDrift 22s ease-in-out reverse infinite;
+      }
+
+      .emergency-strip-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          180deg,
+          #020407 0%,
+          rgba(40, 5, 5, 0.75) 15%,
+          rgba(40, 5, 5, 0.3) 50%,
+          #020407 100%
+        );
+      }
+
+      .emergency-strip-tag {
+        display: inline-block;
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        color: #ef4444;
+        margin-bottom: 8px;
+        animation: redAlertPulse 2s ease-in-out infinite;
+      }
+
+      .emergency-strip-btn {
+        display: inline-flex;
+        min-width: 210px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(239, 68, 68, 0.7);
+        background: rgba(20, 5, 5, 0.85);
+        backdrop-filter: blur(4px);
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        white-space: nowrap;
+        box-shadow:
+          0 8px 22px rgba(0, 0, 0, 0.6),
+          0 0 15px rgba(239, 68, 68, 0.25);
+        transition:
+          border-color 0.25s ease,
+          background 0.25s ease,
+          box-shadow 0.25s ease;
+        animation: zeroGFloatAlt 5.4s ease-in-out infinite;
+      }
+
+      .emergency-strip-btn:hover {
+        animation-play-state: paused;
+        border-color: #f87171;
+        background: rgba(127, 29, 29, 0.88);
+        box-shadow:
+          0 10px 26px rgba(0, 0, 0, 0.7),
+          0 0 24px rgba(239, 68, 68, 0.65);
+      }
+
+      /* ================= MENTAL HEALTH & PSYCHOLOGICAL STRIP (SECTION 4) ================= */
+      .mental-strip {
+        position: relative;
+        width: 100%;
+        min-height: 453px;
+        overflow: hidden;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        background: #020407;
+      }
+
+      .mental-strip-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -3;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 42%;
+        filter: brightness(0.95) contrast(1.05);
+        animation: orbitalBgDrift 26s ease-in-out infinite;
+      }
+
+      .mental-strip-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          180deg,
+          #020407 0%,
+          rgba(2, 28, 40, 0.75) 15%,
+          rgba(2, 12, 20, 0.3) 50%,
+          #020407 100%
+        );
+      }
+
+      .mental-strip-tag {
+        display: inline-block;
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        color: #38bdf8;
+        margin-bottom: 8px;
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      }
+
+      .mental-strip-btn {
+        display: inline-flex;
+        min-width: 210px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(56, 189, 248, 0.7);
+        background: rgba(5, 20, 35, 0.85);
+        backdrop-filter: blur(4px);
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        white-space: nowrap;
+        box-shadow:
+          0 8px 22px rgba(0, 0, 0, 0.55),
+          0 0 15px rgba(56, 189, 248, 0.22);
+        transition:
+          border-color 0.25s ease,
+          background 0.25s ease,
+          box-shadow 0.25s ease;
+        animation: zeroGFloat 6.4s ease-in-out infinite;
+      }
+
+      .mental-strip-btn:hover {
+        animation-play-state: paused;
+        border-color: #7dd3fc;
+        background: rgba(14, 116, 144, 0.88);
+        box-shadow:
+          0 10px 26px rgba(0, 0, 0, 0.65),
+          0 0 22px rgba(125, 211, 252, 0.6);
+      }
+      /* ===================================================================== */
+
+      .site-footer {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        isolation: isolate;
+        border-top: 1px solid rgba(56, 189, 248, 0.2);
+        background: #030508;
+        color: #e2e8f0;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .footer-bg-media {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.9);
+      }
+
+      .footer-dark-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          rgb(3 5 8 / 67%) 0%,
+          rgba(2, 4, 8, 0.3) 100%
+        );
+      }
+
+      .footer-container {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 60px 40px 30px;
+      }
+
+      .footer-content-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 40px;
+      }
+
+      .footer-col {
+        flex: 1;
+        min-width: 220px;
+      }
+
+      .footer-left .footer-logo {
+        margin-bottom: 10px;
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 5px;
+      }
+
+      .footer-left .footer-desc {
+        max-width: 320px;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 0.85rem;
+        font-weight: 300;
+        line-height: 1.6;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+      }
+
+      .footer-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .footer-emblem {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .footer-logo-img {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1.5px solid rgba(56, 189, 248, 0.65);
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+      }
+
+      .emblem-title {
+        color: #fff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+      }
+
+      .emblem-sub {
+        color: #7dd3fc;
+        font-size: 0.75rem;
+        font-weight: 400;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+      }
+
+      .footer-right {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .footer-nav-group h4 {
+        margin-bottom: 12px;
+        color: #7dd3fc;
+        font-family: "Orbitron", sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .footer-nav-group ul {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        list-style: none;
+      }
+
+      .footer-nav-group a {
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 0.85rem;
+        font-weight: 300;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+        transition: color 0.25s ease, transform 0.25s ease;
+        display: inline-block;
+      }
+
+      .footer-nav-group a:hover {
+        color: #38bdf8;
+        transform: translateX(4px);
+      }
+
+      .footer-divider {
+        width: 100%;
+        height: 1px;
+        margin: 35px 0 20px;
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .footer-bottom-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.8rem;
+        font-weight: 300;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+      }
+
+      .footer-team span {
+        color: #7dd3fc;
+        font-weight: 600;
+      }
+
+      @media (max-width: 850px) {
+        .navbar {
+          flex-wrap: wrap;
+          min-height: auto;
+          padding: 18px 4%;
+          gap: 15px;
+        }
+
+        .brand-logo-container {
+          order: -1;
+          width: 100%;
+          justify-content: center;
+          margin-bottom: 5px;
+        }
+
+        .nav-logo {
+          width: 55px;
+          height: 55px;
+        }
+
+        .brand-text-left,
+        .brand-text-right {
+          font-size: 14px;
+          letter-spacing: 3px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .hero {
+          min-height: 100svh;
+        }
+
+        .side-label {
+          display: none;
+        }
+
+        .bottom-text {
+          right: 16px;
+          bottom: 16px;
+          left: 16px;
+          font-size: 10px;
+          letter-spacing: 2px;
+          line-height: 1.5;
+        }
+
+        .background-video {
+          object-position: 58% center;
+        }
+
+        .hero-content {
+          width: calc(100% - 48px);
+          max-width: 660px;
+          margin: 145px 24px 90px;
+        }
+
+        .hero-content h1 {
+          font-size: clamp(28px, 6vw, 42px);
+          line-height: 1.2;
+        }
+
+        .hero-content p {
+          max-width: 540px;
+          font-size: 15px;
+        }
+
+        .cosmi-strip-container,
+        .emergency-strip .cosmi-strip-container,
+        .mental-strip .cosmi-strip-container {
+          width: 100%;
+          padding: 36px 24px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .cosmi-strip,
+        .emergency-strip,
+        .mental-strip {
+          min-height: 360px;
+        }
+
+        .cosmi-strip-text {
+          width: 100%;
+        }
+
+        .cosmi-strip-tag,
+        .emergency-strip-tag,
+        .mental-strip-tag {
+          max-width: 100%;
+          font-size: 9px;
+          letter-spacing: 1.5px;
+          line-height: 1.6;
+        }
+
+        .cosmi-strip-btn,
+        .emergency-strip-btn,
+        .mental-strip-btn {
+          min-width: 0;
+          max-width: 100%;
+          padding: 12px 16px;
+          font-size: 11px;
+          letter-spacing: 1.5px;
+          line-height: 1.5;
+          text-align: center;
+          white-space: normal;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .nav-group {
+          gap: 12px;
+        }
+
+        .nav-group a.nav-link {
+          font-size: 9px;
+          letter-spacing: 1px;
+        }
+
+        .brand-lockup {
+          gap: 8px;
+        }
+
+        .nav-logo {
+          width: 46px;
+          height: 46px;
+        }
+
+        .brand-text-left,
+        .brand-text-right {
+          font-size: 12px;
+          letter-spacing: 2px;
+        }
+
+        .hero-content {
+          margin-top: 135px;
+          margin-right: 20px;
+          margin-left: 20px;
+          width: calc(100% - 40px);
+        }
+
+        .hero-content h1 {
+          margin-bottom: 16px;
+          font-size: clamp(26px, 8vw, 34px);
+        }
+
+        .hero-content p {
+          margin-bottom: 24px;
+          font-size: 14px;
+        }
+
+        .buttons {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+
+        .button {
+          width: 100%;
+          min-width: 0;
+          min-height: 46px;
+          padding: 10px 12px;
+          font-size: 11px;
+          letter-spacing: 1px;
+          text-align: center;
+        }
+
+        .cosmi-strip,
+        .emergency-strip,
+        .mental-strip {
+          min-height: 380px;
+        }
+
+        .cosmi-strip-container,
+        .emergency-strip .cosmi-strip-container,
+        .mental-strip .cosmi-strip-container {
+          padding: 32px 20px;
+        }
+
+        .cosmi-strip-text h2 {
+          font-size: clamp(16px, 5vw, 20px);
+          line-height: 1.45;
+          overflow-wrap: anywhere;
+        }
+
+        .cosmi-strip-text p {
+          font-size: 13px;
+        }
+
+        .footer-container {
+          padding-right: 20px;
+          padding-left: 20px;
+        }
+
+        .footer-emblem {
+          flex-wrap: wrap;
+        }
+
+        .emblem-title {
+          font-size: 13px;
+          letter-spacing: 2px;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .footer-container {
+          padding: 45px 24px 24px;
+        }
+
+        .footer-content-row {
+          align-items: flex-start;
+          gap: 30px;
+        }
+
+        .footer-center {
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .footer-right {
+          justify-content: flex-start;
+        }
+
+        .footer-bottom-row {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+
+        .reveal-block {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="hero" id="section-1">
+      <video
+        class="background-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        aria-hidden="true"
+      >
+        <source src="vedio/15726815_3840_2160_30fps.mp4" type="video/mp4" />
+      </video>
+
+      <div class="overlay"></div>
+
+      <nav class="navbar" aria-label="Main navigation">
+        <div class="nav-group">
+          <a href="emergency-ai.html" class="nav-link">emergency</a>
+          <a href="bio.html" class="nav-link">HEALTH HUB</a>
+        </div>
+
+        <!-- COSMI + اللوجو الدائري في المنتصف + HEALTH -->
+        <div class="brand-logo-container">
+          <a href="#section-1" class="brand-lockup">
+            <span class="brand-text-left">COSMI</span>
+            <img src="vedio/logo1.png" alt="CosmiHealth Logo" class="nav-logo" />
+            <span class="brand-text-right">HEALTH</span>
+          </a>
+        </div>
+
+        <div class="nav-group">
+          <a href="anatomy.html" class="nav-link">3D-BIO</a>
+          <a href="ai-men.html" class="nav-link">AI-MENTOR</a>
+        </div>
+      </nav>
+
+      <section class="hero-content">
+        <h1>
+          SAFEGUARDING<br />
+          ASTRONAUT HEALTH<br />
+          ACROSS DEEP SPACE.
+        </h1>
+
+        <p>
+          Real-time biometric monitoring, 3D physiological tracking, and autonomous
+          AI medical agents protecting crew members beyond Earth.
+        </p>
+
+        <div class="buttons">
+          <a class="button primary" href="#section-2">OPEN MEDICAL HUB</a>
+          <a class="button" href="#vitals">EXPLORE VITALS</a>
+        </div>
+      </section>
+
+      <div class="side-label" aria-label="Astronauts">
+        <span>A</span>
+        <span>S</span>
+        <span>T</span>
+        <span>R</span>
+        <span>O</span>
+        <span>N</span>
+        <span>A</span>
+        <span>U</span>
+        <span>T</span>
+        <span>S</span>
+      </div>
+
+      <div class="bottom-text">
+        C - O - S - M - I - H - E - A - L - T - H - 2 0 2 6
+      </div>
+    </main>
+
+    <!-- SEAMLESS STRIP SECTION (SECTION 2) -->
+    <section class="cosmi-strip" id="vitals">
+      <img
+        src="vedio/Gemini_Generated_Image_afmj3eafmj3eafmj.jpg"
+        alt="Astronaut in-orbit telemetry"
+        class="cosmi-strip-bg"
+      />
+      <div class="cosmi-strip-overlay"></div>
+      <div class="cosmi-strip-stars"></div>
+
+      <div class="cosmi-strip-container reveal-block">
+        <div class="cosmi-strip-text">
+          <span class="cosmi-strip-tag">IN-ORBIT BIOTELEMETRY</span>
+          <h2>CONTINUOUS HEALTH MONITORING BEYOND GRAVITY</h2>
+          <p>
+            Real-time physiological tracking and AI-driven diagnostics keeping
+            astronauts resilient during long-duration space missions.
+          </p>
+        </div>
+
+        <a href="bio.html" class="cosmi-strip-btn">LAUNCH TELEMETRY</a>
+      </div>
+    </section>
+
+    <!-- EMERGENCY & RED ALERT STRIP (SECTION 3) -->
+    <section class="emergency-strip" id="emergency-hub">
+      <img
+        src="vedio/Gemini_Generated_Image_ic53s6ic53s6ic53.jpg"
+        alt="Spacecraft cabin malfunction and red alert telemetry"
+        class="emergency-strip-bg"
+      />
+      <div class="emergency-strip-overlay"></div>
+      <div class="cosmi-strip-stars"></div>
+
+      <div class="cosmi-strip-container reveal-block">
+        <div class="cosmi-strip-text">
+          <span class="emergency-strip-tag">RED ALERT • CABIN MALFUNCTION</span>
+          <h2>AUTONOMOUS EMERGENCY &amp; SYSTEM FAILURE RESPONSE</h2>
+          <p>
+            Real-time critical hazard detection, cabin pressure monitoring, and emergency AI protocols 
+            safeguarding the crew during critical orbital anomalies.
+          </p>
+        </div>
+
+        <a href="emergency-ai.html" class="emergency-strip-btn">VIEW EMERGENCY PROTOCOLS</a>
+      </div>
+    </section>
+
+    <!-- MENTAL HEALTH & PSYCHOLOGICAL SUPPORT STRIP (SECTION 4) -->
+    <section class="mental-strip" id="mental-hub">
+      <img
+        src="vedio/Moon-Astronaut-Satellite-Forward-Astronomy.webp"
+        alt="Astronaut psychological health and mental wellbeing in space"
+        class="mental-strip-bg"
+      />
+      <div class="mental-strip-overlay"></div>
+      <div class="cosmi-strip-stars"></div>
+
+      <div class="cosmi-strip-container reveal-block">
+        <div class="cosmi-strip-text">
+          <span class="mental-strip-tag">PSYCHOLOGICAL WELLBEING • CREW MENTAL HEALTH</span>
+          <h2>ASTRONAUT MENTAL HEALTH &amp; RESILIENCE SUPPORT</h2>
+          <p>
+            Advanced cognitive tracking, psychological stress management, and AI-driven mental health agents 
+            ensuring crew emotional stability across deep space missions.
+          </p>
+        </div>
+
+        <a href="ai-men.html" class="mental-strip-btn">EXPLORE MENTAL HUB</a>
+      </div>
+    </section>
+
+    <footer class="site-footer" id="section-2">
+      <video
+        class="footer-bg-media"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2022&auto=format&fit=crop"
+        aria-hidden="true"
+      >
+        <source src="vedio/12638483_2088_720_60fps.mp4" type="video/mp4" />
+      </video>
+
+      <div class="footer-dark-overlay"></div>
+
+      <div class="footer-container reveal-block">
+        <div class="footer-content-row">
+          <div class="footer-col footer-left">
+            <h3 class="footer-logo">COSMIHEALTH</h3>
+            <p class="footer-desc">
+              Advanced multi-agent AI and biometric telemetry for deep-space astronaut
+              health monitoring. NASA Space Apps Challenge.
+            </p>
+          </div>
+
+          <div class="footer-col footer-center">
+            <div class="footer-emblem">
+              <img src="vedio/logo1.png" alt="CosmiHealth Logo" class="footer-logo-img" />
+              <span class="emblem-title">Cosmic Vision</span>
+            </div>
+            <p class="emblem-sub">Space Medicine &amp; Telemetry</p>
+          </div>
+
+          <div class="footer-col footer-right">
+            <div class="footer-nav-group">
+              <h4>Navigation</h4>
+              <ul>
+                <li><a href="#section-1">Home</a></li>
+                <li><a href="#section-2">Health Hub</a></li>
+                <li><a href="#emergency-hub">Emergency Hub</a></li>
+                <li><a href="#mental-hub">Mental Hub</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-bottom-row">
+          <p class="footer-copy">&copy; 2026 CosmiHealth. All Rights Reserved.</p>
+          <p class="footer-team">Engineered by <span>CosmiHealth</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const revealBlocks = document.querySelectorAll(".reveal-block");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+              }
+            });
+          },
+          { threshold: 0.15 }
+        );
+
+        revealBlocks.forEach((block) => observer.observe(block));
+      });
+    </script>
+  </body>
+</html>

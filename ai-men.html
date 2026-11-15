@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#070914" />
+    <meta
+      name="description"
+      content="COSMIHEALTH — a private, simulation-first astronaut wellbeing and psychological resilience prototype."
+    />
+    <title>COSMIHEALTH — Crew Resilience Systems</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="ai-men.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <canvas class="starfield" id="starfield" aria-hidden="true"></canvas>
+    <header class="topbar">
+      <div class="top-status">
+        <span class="status-orb"></span><span class="mono">CREW SUPPORT<br />SIMULATION</span>
+      </div>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="home.html">Home</a>
+        <a href="#section-2">Health Hub</a>
+        <a class="brand-logo" href="#section-1" aria-label="COSMIHEALTH home">COSMIHEALTH</a>
+        <a href="#hologram">3D-Bio</a>
+        <a href="#agents">AI-MENTOR</a>
+      </nav>
+      <button
+        class="api-status"
+        id="api-settings"
+        type="button"
+        aria-label="Configure AI pilot connection"
+      >
+        <span class="api-status-dot"></span><span id="api-status-text">SIM MODE</span
+        ><span class="mono">↗</span>
+      </button>
+      <button class="menu-toggle" aria-expanded="false" aria-label="Open navigation">☰</button>
+    </header>
+
+    <main>
+      <section class="hero subpage-hero" id="section-1" aria-labelledby="hero-heading">
+        <video
+          class="hero-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&amp;fit=crop&amp;w=2200&amp;q=85"
+          aria-label="Earth seen from the International Space Station"
+        >
+          <source
+            src="https://images-assets.nasa.gov/video/Earth%20Views%20from%20the%20International%20Space%20Station/Earth%20Views%20from%20the%20International%20Space%20Station~preview.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-copy subpage-hero-copy">
+          <div class="hero-breadcrumb mono">
+            <a href="#section-1">COSMIHEALTH</a><span>/</span><span>CREW WELLNESS</span
+            ><span>/</span><span>AI COPILOT</span>
+          </div>
+          <div class="eyebrow">
+            <span class="eyebrow-line"></span> PRIVATE CREW SUPPORT · LONG-DURATION FLIGHT
+          </div>
+          <h1 id="hero-heading">ASTRA AI <span>COPILOT</span></h1>
+          <p>
+            A calm place to pause, talk something through, or try a small reset. Start wherever you
+            are.
+          </p>
+          <div class="hero-disclaimer">
+            <span class="tiny-live"></span> SIMULATION MODE <i>·</i> OPTIONAL AI CONNECTION
+            <i>·</i> HUMAN SUPPORT FIRST
+          </div>
+        </div>
+        <div class="hero-orbit-art" aria-hidden="true">
+          <div class="hero-orbit hero-orbit-a"></div>
+          <div class="hero-orbit hero-orbit-b"></div>
+          <div class="hero-planet"><span></span></div>
+          <i class="hero-satellite"></i>
+          <div class="orbit-readout mono">EARTH ORBIT<br /><strong>CREW CONNECTED</strong></div>
+        </div>
+        <a class="hero-go-chat mono" href="#agents"><span>↓</span> OPEN PRIVATE COPILOT CHAT</a>
+      </section>
+
+      <section class="agents-section section-wrap" id="agents" aria-labelledby="agents-heading">
+        <div class="section-top">
+          <div class="eyebrow">
+            <span class="ai-pulse"></span> YOUR AI SUPPORT COPILOT
+            <span class="eyebrow-slash">/</span> 01
+          </div>
+          <button class="text-link api-link" id="configure-ai">
+            CONFIGURE AI PROVIDER <span>↗</span>
+          </button>
+        </div>
+        <div class="copilot-heading">
+          <div class="pilot-brand">
+            <span class="pilot-icon">✳</span
+            ><span class="mono"
+              >ASTRA AI PILOT <small>OPTIONAL CONVERSATION PARTNER · NOT A CLINICIAN</small></span
+            >
+          </div>
+          <p>Share as much or as little as you like. Try a prompt or simply start typing.</p>
+          <span class="mono privacy-badge">● CHAT NOT SAVED</span>
+        </div>
+        <div class="ai-layout">
+          <aside class="ai-aside">
+            <div class="ai-visual glass-panel">
+              <div class="ai-radar">
+                <div class="radar-grid"></div>
+                <div class="radar-ring radar-a"></div>
+                <div class="radar-ring radar-b"></div>
+                <div class="radar-sweep"></div>
+                <div class="ai-avatar-core"><span>✳</span></div>
+                <i class="radar-ping ping-one"></i><i class="radar-ping ping-two"></i
+                ><i class="radar-ping ping-three"></i>
+              </div>
+              <div class="ai-visual-label">
+                <span class="mono">ASTRA / PILOT CORE</span
+                ><span class="mono"
+                  ><i class="core-dot"></i> <span id="pilot-status">SIMULATION ACTIVE</span></span
+                >
+              </div>
+            </div>
+            <div class="support-protocol">
+              <span class="protocol-icon">!</span>
+              <p>
+                <strong>Need human support?</strong> ASTRA cannot dispatch help or assess immediate
+                safety. Reach out to someone you trust and use your established mission procedures
+                to contact qualified human support.
+              </p>
+            </div>
+            <div class="ai-capabilities">
+              <span><i>01</i> Talk it through, without judgment</span
+              ><span><i>02</i> Try a short grounding exercise</span
+              ><span><i>03</i> Explore isolation, stress, or sleep</span>
+            </div>
+          </aside>
+          <div class="chat-panel glass-panel">
+            <div class="chat-header">
+              <div class="chat-identity">
+                <span class="chat-icon">✳</span
+                ><span
+                  ><b>ASTRA AI PILOT</b
+                  ><small id="chat-mode-label">SIMULATION MODE · SAMPLE RESPONSES</small></span
+                >
+              </div>
+              <button class="history-button" id="clear-chat" type="button" title="Clear chat">
+                CLEAR SESSION ×
+              </button>
+            </div>
+            <div class="chat-safety-banner" id="chat-safety-banner">
+              <span>◈</span> Local simulation only. Don’t include identifying or confidential
+              mission information.
+            </div>
+            <div
+              class="chat-messages"
+              id="chat-messages"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions text"
+            >
+              <div class="chat-time mono">PRIVATE DEMO SESSION · NOT SAVED</div>
+              <div class="chat-message assistant-message">
+                <span class="message-avatar">✳</span>
+                <div class="message-bubble">
+                  <p>
+                    Hi. I’m ASTRA, a psychological-wellness support prototype—not a counselor or
+                    mission link. Living and working so far from home can bring a lot of different
+                    feelings. What’s on your mind today?
+                  </p>
+                  <span class="message-meta">SIMULATED RESPONSE · NOT CLINICALLY VALIDATED</span>
+                </div>
+              </div>
+            </div>
+            <div class="quick-prompts">
+              <button type="button" data-prompt="I've been feeling isolated lately.">
+                I feel far from everyone <span>↗</span></button
+              ><button type="button" data-prompt="I'd like help unwinding before sleep.">
+                Help me wind down <span>↗</span></button
+              ><button type="button" data-prompt="Can you guide a short grounding exercise?">
+                Try a grounding exercise <span>↗</span>
+              </button>
+            </div>
+            <form class="chat-form" id="chat-form">
+              <label class="sr-only" for="chat-input">Message the ASTRA AI Pilot</label
+              ><textarea
+                id="chat-input"
+                maxlength="1200"
+                rows="1"
+                placeholder="Share what’s going on, in your own words…"
+                required
+              ></textarea
+              ><button type="submit" class="send-button" aria-label="Send message">↑</button>
+            </form>
+            <div class="chat-bottom">
+              <span
+                >⟡ <span id="provider-disclosure">Simulation only · messages not saved</span></span
+              ><button type="button" id="chat-support">TALK TO A HUMAN <span>↗</span></button>
+            </div>
+            <details class="nasa-library" id="nasa-library">
+              <summary>
+                <span>NASA RESEARCH CONTEXT</span>
+                <span class="nasa-library-count mono">5 CURATED SOURCES</span>
+              </summary>
+              <p>
+                Curated summaries of public NASA research pages, not a live NASA search. Relevant
+                sources are shared with your configured AI provider only in live mode. ASTRA is an
+                independent prototype, not affiliated with or endorsed by NASA.
+              </p>
+              <div id="nasa-library-sources" class="nasa-library-sources"></div>
+            </details>
+          </div>
+        </div>
+        <div class="care-boundary">
+          <span class="care-boundary-icon">✳</span>
+          <div>
+            <b>Supportive technology; human care comes first.</b>
+            <p>
+              This prototype does not diagnose, provide therapy, monitor safety, contact your crew,
+              or replace a qualified mental-health professional or mission-specific support
+              protocol. If you feel at risk or in immediate danger, contact a trusted person and
+              your established emergency support channel now.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="overview-section section-wrap" id="section-2" aria-labelledby="hub-heading">
+        <div class="section-top">
+          <div class="eyebrow">
+            <span class="live-pulse"></span> PERSONAL WELLNESS CONSOLE
+            <span class="eyebrow-slash">/</span> 02
+          </div>
+          <span class="demo-chip mono">● SIMULATED DEMO DATA</span>
+        </div>
+        <div class="heading-row">
+          <div>
+            <h2 id="hub-heading">A moment to check in<span class="cyan">.</span></h2>
+            <p class="section-summary">
+              A gentle snapshot of this demo session—not a psychological assessment or
+              fitness-for-duty evaluation.
+            </p>
+          </div>
+          <span class="record-badge mono">PRIVATE SESSION · IN-MEMORY</span>
+        </div>
+
+        <div class="dashboard">
+          <aside class="crew-panel glass-panel">
+            <div class="panel-top">
+              <span class="mono">CREW MEMBER / OPTIONAL</span><span class="crosshair">✳</span>
+            </div>
+            <div class="crew-photo">
+              <img
+                src="https://images-assets.nasa.gov/image/iss072e189112/iss072e189112~large.jpg"
+                alt="NASA reference image of an astronaut aboard the International Space Station"
+                loading="lazy"
+              /><span class="photo-credit mono">NASA REFERENCE IMAGE</span>
+            </div>
+            <div class="crew-caption">
+              <div><b>Mission crew</b><span>How are you arriving today?</span></div>
+              <span class="crew-token">✳</span>
+            </div>
+            <div class="mood-picker" role="group" aria-label="Optional private mood check-in">
+              <button
+                type="button"
+                data-mood="steady"
+                aria-pressed="false"
+                aria-label="Feeling steady"
+              >
+                <span>◎</span><small>STEADY</small>
+              </button>
+              <button
+                type="button"
+                data-mood="stretched"
+                aria-pressed="false"
+                aria-label="Feeling stretched"
+              >
+                <span>◌</span><small>STRETCHED</small>
+              </button>
+              <button type="button" data-mood="low" aria-pressed="false" aria-label="Feeling low">
+                <span>☾</span><small>LOW</small>
+              </button>
+              <button
+                type="button"
+                data-mood="connected"
+                aria-pressed="false"
+                aria-label="Feeling connected"
+              >
+                <span>✳</span><small>CONNECTED</small>
+              </button>
+            </div>
+            <label class="sr-only" for="checkin-note">Optional note for this session</label>
+            <textarea
+              class="checkin-note"
+              id="checkin-note"
+              maxlength="160"
+              placeholder="Anything you want to note? Optional · stays on this device for this session."
+            ></textarea>
+            <button class="button button-main checkin-submit" id="save-checkin" type="button">
+              Save this check-in <span>↗</span>
+            </button>
+            <p class="panel-footnote">
+              Your note is never added to an AI request unless you choose Send.
+            </p>
+          </aside>
+
+          <div class="dashboard-main">
+            <div class="metric-grid">
+              <article class="metric-card">
+                <div class="metric-top">
+                  <span class="metric-icon violet">◉</span><span class="mono">STRESS CHECK-IN</span
+                  ><span class="metric-menu">· · ·</span>
+                </div>
+                <div class="metric-reading">
+                  <strong id="stress-reading">—</strong><span>of 10</span>
+                </div>
+                <div class="metric-status" id="stress-status">SELF-REPORT · NOT SCORED</div>
+                <div class="metric-spark spark-violet">
+                  <svg viewBox="0 0 170 34" preserveAspectRatio="none" aria-hidden="true">
+                    <path
+                      d="M0 22 C17 21 20 9 37 15 S57 22 71 14 S92 25 106 18 S126 11 141 17 S159 14 170 8"
+                    />
+                  </svg>
+                </div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-top">
+                  <span class="metric-icon cyan">☾</span><span class="mono">SLEEP REFLECTION</span
+                  ><span class="metric-menu">· · ·</span>
+                </div>
+                <div class="metric-reading">
+                  <strong id="sleep-reading">—</strong><span>hours · optional</span>
+                </div>
+                <div class="metric-status">CREW-ENTERED · NO SENSOR</div>
+                <div class="metric-spark">
+                  <svg viewBox="0 0 170 34" preserveAspectRatio="none" aria-hidden="true">
+                    <path
+                      d="M0 19 C17 14 23 24 38 16 S58 12 70 17 S92 21 105 13 S127 18 141 12 S156 16 170 8"
+                    />
+                  </svg>
+                </div>
+              </article>
+              <article class="metric-card metric-card-wide">
+                <div class="metric-top">
+                  <span class="metric-icon aqua">⌁</span><span class="mono">WELLNESS TREND</span
+                  ><span class="mono metric-label">YOUR SESSION ONLY</span>
+                </div>
+                <div class="wellness-graphic">
+                  <span class="trend-line"></span><span class="trend-point point-1"></span
+                  ><span class="trend-point point-2"></span><span class="trend-point point-3"></span
+                  ><span class="trend-point point-4"></span
+                  ><svg
+                    class="checkin-trend-svg"
+                    viewBox="0 0 100 48"
+                    preserveAspectRatio="none"
+                    role="img"
+                    aria-label="Optional self-reported reflection over this session"
+                  ></svg>
+                  <div class="trend-empty" id="trend-empty">
+                    Your private check-ins will appear here. No trend inferred without your input.
+                  </div>
+                  <div
+                    class="mood-history"
+                    id="mood-history"
+                    aria-label="Your optional check-in history this session"
+                  ></div>
+                </div>
+                <div class="trend-footer mono">
+                  <span>OPTIONAL SELF-REPORT · NOT AN ASSESSMENT</span
+                  ><button type="button" id="clear-checkins">CLEAR THIS SESSION</button>
+                </div>
+              </article>
+            </div>
+            <div class="dashboard-bottom">
+              <article class="glass-panel exercise-card">
+                <div class="panel-top">
+                  <div>
+                    <span class="mono small-kicker">DAILY PRACTICE / OPTIONAL</span>
+                    <h3>Choose a small reset</h3>
+                  </div>
+                  <span class="exercise-day mono">YOUR PACE</span>
+                </div>
+                <button class="exercise-row" data-exercise="breathing">
+                  <span class="exercise-symbol breathing-symbol">◌</span
+                  ><span
+                    ><b>Guided breathing</b
+                    ><small>One minute · settle into a slower rhythm</small></span
+                  ><span class="exercise-time mono">01:00 ↗</span></button
+                ><button class="exercise-row" data-exercise="grounding">
+                  <span class="exercise-symbol grounding-symbol">⌖</span
+                  ><span
+                    ><b>Five-senses grounding</b
+                    ><small>Reconnect with the present moment</small></span
+                  ><span class="exercise-time mono">02:00 ↗</span></button
+                ><button class="exercise-row" data-exercise="mindful">
+                  <span class="exercise-symbol mindful-symbol">✳</span
+                  ><span
+                    ><b>Quiet observation</b
+                    ><small>Notice your surroundings without judgment</small></span
+                  ><span class="exercise-time mono">01:30 ↗</span>
+                </button>
+              </article>
+              <article class="glass-panel rec-card">
+                <div class="panel-top">
+                  <div>
+                    <span class="mono small-kicker">GENTLE SUGGESTIONS</span>
+                    <h3>Your next step</h3>
+                  </div>
+                  <span class="recommend-icon">✳</span>
+                </div>
+                <div class="recommend-item">
+                  <span class="recommend-index mono">01</span>
+                  <p>
+                    A brief check-in with someone you trust can make a demanding day feel less
+                    solitary.
+                  </p>
+                </div>
+                <div class="recommend-item">
+                  <span class="recommend-index mono">02</span>
+                  <p>
+                    Choose just one small reset. You can stop or skip any exercise whenever you
+                    like.
+                  </p>
+                </div>
+                <button class="text-link" data-action="support">
+                  EXPLORE HUMAN SUPPORT <span>↗</span>
+                </button>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div class="privacy-bar">
+          <span class="privacy-icon">◈</span>
+          <p>
+            <strong>Privacy first.</strong> Check-ins, reflections, and exercise activity exist in
+            browser memory only and disappear when you refresh. Nothing is transmitted unless you
+            configure an AI provider and choose to send a message.
+          </p>
+          <span class="mono">NO DIAGNOSES<br />NO AUTOMATIC SCORING</span>
+        </div>
+      </section>
+
+      <section class="hologram-section section-wrap" id="hologram" aria-labelledby="tools-heading">
+        <div class="section-top">
+          <div class="eyebrow">
+            PERSONAL RESILIENCE TOOLS <span class="eyebrow-slash">/</span> 03
+          </div>
+          <span class="mono demo-note">OPTIONAL · SELF-GUIDED · NOT THERAPY</span>
+        </div>
+        <div class="heading-row">
+          <div>
+            <h2 id="tools-heading">Find your own rhythm<span class="cyan">.</span></h2>
+            <p class="section-summary">
+              Short grounding and breathing practices, designed for an enclosed environment. There’s
+              no right way to feel.
+            </p>
+          </div>
+        </div>
+        <div class="tool-layout">
+          <article class="breathing-stage glass-panel" id="breathing-stage">
+            <div class="stage-label mono">
+              <span>01 / BREATHING SPACE</span
+              ><span class="stage-live"><i></i> READY WHEN YOU ARE</span>
+            </div>
+            <div class="breath-visual" id="breath-visual" aria-hidden="true">
+              <div class="breath-ring ring-outer"></div>
+              <div class="breath-ring ring-mid"></div>
+              <div class="breath-core"><span class="breath-symbol">✳</span></div>
+              <div class="breath-orbit breath-orbit-one"></div>
+              <div class="breath-orbit breath-orbit-two"></div>
+              <span class="breath-star star-one"></span><span class="breath-star star-two"></span
+              ><span class="breath-star star-three"></span>
+            </div>
+            <div class="breath-guidance" aria-live="polite">
+              <span class="mono" id="breath-phase">A PAUSE FOR YOU</span
+              ><strong id="breath-instruction">Settle in at your own pace.</strong>
+              <p id="breath-detail">
+                If breath focus doesn't feel right, try the grounding practice instead.
+              </p>
+            </div>
+            <div class="stage-controls">
+              <button class="button button-main" id="breath-start">
+                Begin one-minute reset <span>↗</span></button
+              ><button class="button button-ghost hidden" id="breath-stop">
+                End practice <span>×</span>
+              </button>
+            </div>
+            <p class="stage-note mono">
+              GENTLE PACED BREATHING · NEVER HOLD YOUR BREATH · STOP IF UNCOMFORTABLE
+            </p>
+          </article>
+          <article class="exercise-info">
+            <div class="eyebrow">SMALL MOMENTS CAN HELP</div>
+            <h3>Grounding works<br />wherever you are.</h3>
+            <p>
+              A short pause can help shift attention toward the present moment. It does not erase
+              difficult feelings or replace caring human connection.
+            </p>
+            <div class="grounding-steps">
+              <div>
+                <span class="mono">01</span>
+                <p>Notice <b>five</b> things you can see.</p>
+              </div>
+              <div>
+                <span class="mono">02</span>
+                <p>Notice <b>four</b> things you can feel.</p>
+              </div>
+              <div>
+                <span class="mono">03</span>
+                <p>Notice <b>three</b> things you can hear.</p>
+              </div>
+              <div>
+                <span class="mono">04</span>
+                <p>Notice <b>two</b> scents and <b>one</b> taste.</p>
+              </div>
+            </div>
+            <button class="text-link" data-exercise="grounding">
+              START FIVE-SENSES PRACTICE <span>↗</span>
+            </button>
+          </article>
+        </div>
+        <div class="selfcheck-card glass-panel">
+          <div>
+            <span class="mono small-kicker"
+              >OPTIONAL SELF-REFLECTION · NOT A VALIDATED INSTRUMENT</span
+            >
+            <h3>How heavy does this moment feel?</h3>
+            <p>
+              A private, non-clinical check-in. Your answer is never a diagnosis or
+              mission-readiness rating.
+            </p>
+          </div>
+          <button class="button button-ghost" id="open-selfcheck">
+            Take the 30-second check-in <span>↗</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="training-section" id="training">
+        <div class="training-bg"></div>
+        <div class="section-wrap training-content">
+          <div class="section-top">
+            <div class="eyebrow">
+              <span class="live-pulse violet-pulse"></span> RESILIENCE PRACTICE LAB
+              <span class="eyebrow-slash">/</span> 04
+            </div>
+            <span class="mono demo-chip">SIMULATED SCENARIOS · NOT OPERATIONAL PROCEDURES</span>
+          </div>
+          <div class="heading-row">
+            <div>
+              <h2>Practice the moments<br />that matter<span class="lavender">.</span></h2>
+              <p class="section-summary">
+                Explore how a supportive conversational assistant might respond to common
+                isolated-environment challenges. Training vignettes are fictional.
+              </p>
+            </div>
+            <span class="mono training-count">05 VIGNETTES / SIM</span>
+          </div>
+          <div class="training-layout">
+            <div
+              class="scenario-list"
+              role="tablist"
+              aria-label="Choose a simulated training scenario"
+            >
+              <button
+                class="scenario-card selected"
+                role="tab"
+                aria-selected="true"
+                data-scenario="isolation"
+              >
+                <span class="scenario-num mono">01</span
+                ><span class="scenario-main"
+                  ><b>The quiet distance</b
+                  ><small>Feeling disconnected during a long mission</small></span
+                ><span class="scenario-arrow">↗</span>
+              </button>
+              <button
+                class="scenario-card"
+                role="tab"
+                aria-selected="false"
+                data-scenario="emergency"
+              >
+                <span class="scenario-num mono">02</span
+                ><span class="scenario-main"
+                  ><b>Pressure under a deadline</b
+                  ><small>Stress during a simulated technical issue</small></span
+                ><span class="scenario-arrow">↗</span>
+              </button>
+              <button
+                class="scenario-card"
+                role="tab"
+                aria-selected="false"
+                data-scenario="conflict"
+              >
+                <span class="scenario-num mono">03</span
+                ><span class="scenario-main"
+                  ><b>A difficult conversation</b><small>Tension within a small crew</small></span
+                ><span class="scenario-arrow">↗</span>
+              </button>
+              <button class="scenario-card" role="tab" aria-selected="false" data-scenario="sleep">
+                <span class="scenario-num mono">04</span
+                ><span class="scenario-main"
+                  ><b>Rest feels out of reach</b
+                  ><small>Difficulty winding down in microgravity</small></span
+                ><span class="scenario-arrow">↗</span>
+              </button>
+              <button
+                class="scenario-card"
+                role="tab"
+                aria-selected="false"
+                data-scenario="fatigue"
+              >
+                <span class="scenario-num mono">05</span
+                ><span class="scenario-main"
+                  ><b>Running on empty</b
+                  ><small>Emotional fatigue on an extended mission</small></span
+                ><span class="scenario-arrow">↗</span>
+              </button>
+            </div>
+            <article
+              class="scenario-detail glass-panel"
+              id="scenario-detail"
+              role="tabpanel"
+              aria-live="polite"
+            >
+              <div class="scenario-detail-top mono">
+                <span id="scenario-tag">ISOLATION & CONNECTION</span
+                ><span>TRAINING SIMULATION</span>
+              </div>
+              <div class="scenario-illustration">
+                <span class="scenario-planet"></span><span class="scenario-signal"></span
+                ><span class="scenario-person">✳</span>
+              </div>
+              <div class="scenario-text">
+                <span class="mono">SCENARIO / <span id="scenario-number">01</span></span>
+                <h3 id="scenario-title">A long, quiet orbit</h3>
+                <p id="scenario-description">
+                  “The days have blurred together. I miss just being around people without having to
+                  schedule it.”
+                </p>
+              </div>
+              <div class="response-preview">
+                <span class="assistant-mark">✳</span>
+                <p id="scenario-response">
+                  That kind of quiet distance can weigh on you. What do you find yourself missing
+                  most today—an easy conversation, shared routines, or something else?
+                </p>
+              </div>
+              <div class="scenario-actions">
+                <button class="button button-main" id="try-scenario">
+                  Continue this scenario with ASTRA <span>↗</span></button
+                ><span class="mono scenario-warning"
+                  >ILLUSTRATIVE RESPONSE · NOT CLINICAL GUIDANCE</span
+                >
+              </div>
+            </article>
+          </div>
+          <div class="training-topics">
+            <span class="mono">EXPLORE A TRAINING LENS</span
+            ><button type="button" data-topic="spaceflight">Spaceflight psychology</button
+            ><button type="button" data-topic="isolation">Isolation &amp; confinement</button
+            ><button type="button" data-topic="stress">Stress &amp; recovery</button
+            ><button type="button" data-topic="sleep">Sleep &amp; routines</button
+            ><button type="button" data-topic="team">Team communication</button
+            ><button type="button" data-topic="resilience">Emotional resilience</button
+            ><button type="button" data-topic="support">Human support</button>
+          </div>
+          <p class="training-citation">
+            Spaceflight human-factors context is informed by publicly available general research.
+            This prototype is not a NASA product or training tool; no responses have been clinically
+            validated.
+          </p>
+        </div>
+      </section>
+
+      <section class="principles-section">
+        <div class="section-wrap principles-wrap">
+          <div class="eyebrow">
+            HUMAN-CENTERED BY DESIGN <span class="eyebrow-slash">/</span> 06
+          </div>
+          <h2>Steady presence.<br />Honest boundaries.</h2>
+          <div class="principles-grid">
+            <article>
+              <span class="mono">01 / LISTEN FIRST</span>
+              <h3>Curious, not judgmental.</h3>
+              <p>
+                Reflect what you share and offer a small next step—never assume how an astronaut
+                should feel.
+              </p>
+            </article>
+            <article>
+              <span class="mono">02 / NO DIAGNOSES</span>
+              <h3>A tool, not a clinician.</h3>
+              <p>
+                ASTRA is not a trained or clinically validated psychological-care agent. Qualified
+                humans lead care.
+              </p>
+            </article>
+            <article>
+              <span class="mono">03 / YOUR CHOICE</span>
+              <h3>Control what you share.</h3>
+              <p>
+                Use local simulation, configure an AI provider yourself, skip a check-in, or stop an
+                exercise.
+              </p>
+            </article>
+            <article>
+              <span class="mono">04 / PEOPLE FIRST</span>
+              <h3>Real support matters.</h3>
+              <p>
+                Space exploration can be demanding. Connection with trusted people and established
+                care pathways matters.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mission-close">
+        <div class="mission-close-bg"></div>
+        <div>
+          <span class="eyebrow">BEYOND THE HORIZON, STILL HUMAN</span>
+          <p>Every mission is a human journey.<br /><span>Make room for how it feels.</span></p>
+          <a href="#section-2" class="text-link">RETURN TO YOUR CHECK-IN <span>↑</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <video
+        class="footer-bg-media"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="none"
+        poster="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&amp;fit=crop&amp;w=2022&amp;q=85"
+        aria-label="NASA imagery of Earth from orbit"
+      >
+        <source
+          src="https://images-assets.nasa.gov/video/Earth%20Views%20from%20the%20International%20Space%20Station/Earth%20Views%20from%20the%20International%20Space%20Station~small.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <div class="footer-dark-overlay"></div>
+      <div class="footer-container">
+        <div class="footer-content-row">
+          <div class="footer-col footer-left">
+            <h3 class="footer-logo">COSMIHEALTH</h3>
+            <p class="footer-desc">
+              A human-centered astronaut psychological-wellbeing and resilience prototype, with a
+              privacy-conscious AI conversation simulation.
+            </p>
+            <span class="footer-unaffiliated mono"
+              >INDEPENDENT DEMONSTRATION · NOT AFFILIATED WITH NASA</span
+            >
+          </div>
+          <div class="footer-col footer-center">
+            <div class="footer-emblem">
+              <div class="medical-star-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2v20M2 12h20"></path>
+                </svg>
+              </div>
+              <span class="emblem-title">Cosmic Vision</span>
+            </div>
+            <p class="emblem-sub">Crew Resilience &amp; Human Factors</p>
+          </div>
+          <div class="footer-col footer-right">
+            <div class="footer-nav-group">
+              <h4>Navigation</h4>
+              <ul>
+                <li><a href="#section-1">Home</a></li>
+                <li><a href="#section-2">Health Hub</a></li>
+                <li><a href="#hologram">Resilience tools</a></li>
+                <li><a href="#agents">ASTRA AI Pilot</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <p class="footer-copy">&copy; 2026 COSMIHEALTH. Educational demonstration only.</p>
+          <p class="footer-team">Supportive technology. <span>Human care first.</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <dialog class="app-dialog" id="app-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-top">
+        <span class="dialog-kicker mono" id="dialog-kicker">OPTIONAL PRACTICE</span
+        ><button class="dialog-close" type="button" aria-label="Close dialog">×</button>
+      </div>
+      <div id="dialog-content"></div>
+    </dialog>
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+  </body>
+</html>

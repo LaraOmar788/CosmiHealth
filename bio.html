@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COSMIHEALTH — Deep Space Telemetry Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      color-scheme: dark;
+      --bg-void: #070b19;
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.4);
+      --stable: #38bdf8;
+      --optimal: #2dd4bf;
+      --attention: #fbbf24;
+      --panel: rgba(18, 30, 55, 0.55);
+      --panel-hover: rgba(24, 40, 72, 0.7);
+      --line: rgba(255, 255, 255, 0.15);
+      --line-bright: rgba(56, 189, 248, 0.4);
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      min-width: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-color: var(--bg-void);
+      color: var(--ink);
+      font-family: "Outfit", sans-serif;
+      position: relative;
+      letter-spacing: 0.01em;
+    }
+
+    /* خلفية الفيديو أفتح وأكثر حيوية */
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+      filter: brightness(0.72) contrast(1.08) saturate(1.2);
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.18), transparent 60%),
+        linear-gradient(180deg, rgba(7, 11, 25, 0.25), rgba(7, 11, 25, 0.65));
+    }
+
+    /* استخدام الخط الناعم العصري في كل النصوص والعناوين والأزرار */
+    h1, h2, h3, h4, .score-value, .metric-value, .ai-aura-badge, .score-title, .aura-section-badge, #aura-chat-btn, .nav-link, .brand-lockup, .reset-db-btn, .quick-chip {
+      font-family: "Outfit", sans-serif;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    /* --- TOP SYMMETRIC NAVBAR --- */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 18, 35, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      transition: color 0.25s ease, text-shadow 0.25s ease;
+      position: relative;
+      padding: 6px 0;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #ffffff;
+      text-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      transition: width 0.25s ease;
+      border-radius: 2px;
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+
+    .brand-logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+
+    .nav-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      padding: 2px;
+      background: #070b19;
+      transition: transform 0.35s ease;
+    }
+
+    .brand-lockup:hover .nav-logo {
+      transform: scale(1.08);
+    }
+
+    /* --- DASHBOARD CONTAINER --- */
+    .dashboard-shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* تصميم الكروت الزجاجية الناعمة بزوايا دائرية مثل الصورة */
+    .glass-card,
+    .topbar,
+    .chart-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: relative;
+    }
+
+    .main-area {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      min-height: 64px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+    }
+
+    .search-box {
+      width: min(360px, 42%);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 11px 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      background: rgba(10, 18, 35, 0.7);
+      color: var(--ink);
+      font-size: 13px;
+      transition: all 0.25s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .status-legend {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .status-legend span,
+    .metric-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--status-color);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-legend span::before,
+    .metric-status::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--status-color);
+      box-shadow: 0 0 8px var(--status-color);
+      content: "";
+    }
+
+    [data-status="stable"] { --status-color: var(--stable); }
+    [data-status="optimal"] { --status-color: var(--optimal); }
+    [data-status="attention"] { --status-color: var(--attention); }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-name {
+      color: #e2e8f0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .user-avatar, .logo-icon {
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-bright);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--cyan);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+      border-radius: 50%;
+    }
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .top-banner-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 20px;
+    }
+
+    .ai-greeting-banner {
+      padding: 28px 32px;
+      background: linear-gradient(135deg, rgba(20, 36, 68, 0.65), rgba(12, 22, 42, 0.6));
+    }
+
+    .ai-aura-badge {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 6px 14px;
+      border: 1px solid var(--line-bright);
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--cyan);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+
+    .ai-greeting-banner h2 {
+      color: #ffffff;
+      font-size: clamp(18px, 2.1vw, 24px);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .ai-greeting-banner p,
+    .metric-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .ai-greeting-banner p { margin-top: 10px; }
+
+    .score-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(12, 22, 42, 0.7);
+    }
+
+    .score-title {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .score-date {
+      color: var(--cyan);
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .score-value {
+      margin: 10px 0;
+      color: #ffffff;
+      font-size: 36px;
+      font-weight: 800;
+      text-shadow: 0 0 20px var(--cyan-glow);
+    }
+
+    .score-value small {
+      color: var(--cyan);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .streak {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .metric-card {
+      display: flex;
+      min-height: 190px;
+      flex-direction: column;
+      padding: 22px;
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-3px);
+      background: var(--panel-hover);
+      border-color: var(--line-bright);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .metric-icon {
+      min-height: 44px;
+      color: var(--status-color);
+    }
+
+    .metric-icon svg {
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      filter: drop-shadow(0 0 8px var(--status-color));
+    }
+
+    .metric-card .card-divider {
+      margin: 12px 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .metric-info { margin-top: auto; }
+
+    .title-value-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .title-value-row h4 {
+      color: #f1f5f9;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .metric-value {
+      color: var(--status-color);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .metric-status { margin-top: 6px; }
+    .metric-card p { margin-top: 6px; font-size: 12px; }
+
+    .mini-track {
+      height: 6px;
+      margin-top: 14px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .mini-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--status-color);
+      box-shadow: 0 0 10px var(--status-color);
+      transition: width 0.4s ease;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.8fr);
+      gap: 20px;
+    }
+
+    .chart-card { padding: 22px; border-radius: 20px; }
+
+    .chart-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .chart-heading h3 {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chart-select {
+      max-width: 190px;
+      padding: 9px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(10, 18, 35, 0.8);
+      color: var(--ink);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+    }
+
+    .chart-note,
+    .disclaimer {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .chart-note { margin-top: 12px; }
+
+    .disclaimer {
+      padding: 14px 18px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 16px;
+      background: rgba(251, 191, 36, 0.05);
+      margin-top: 6px;
+    }
+
+    .aura-chat-section {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line-bright);
+      border-radius: 24px;
+      background: radial-gradient(circle at 30% 20%, rgba(22, 42, 78, 0.75), rgba(10, 18, 35, 0.85));
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      min-height: 520px;
+    }
+
+    #meteor-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .aura-chat-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .aura-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .aura-section-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .aura-section-title h3 {
+      font-size: 15px;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .aura-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .aura-section-badge {
+      padding: 7px 14px;
+      border: 1px solid rgba(45, 212, 191, 0.4);
+      border-radius: 20px;
+      background: rgba(45, 212, 191, 0.1);
+      color: #2dd4bf;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .reset-db-btn {
+      padding: 7px 14px;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-radius: 20px;
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .reset-db-btn:hover {
+      background: rgba(251, 191, 36, 0.25);
+    }
+
+    .aura-quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quick-chip {
+      padding: 9px 16px;
+      border: 1px solid var(--line-bright);
+      border-radius: 999px;
+      background: rgba(10, 18, 35, 0.8);
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quick-chip:hover {
+      border-color: #ffffff;
+      background: rgba(56, 189, 248, 0.2);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      transform: translateY(-1px);
+    }
+
+    #aura-chat-messages {
+      flex: 1;
+      min-height: 280px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(7, 13, 27, 0.75);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 13px;
+    }
+
+    .aura-msg {
+      padding: 14px 18px;
+      border-radius: 14px;
+      line-height: 1.6;
+      max-width: 85%;
+    }
+
+    .aura-msg.ai {
+      background: rgba(20, 38, 68, 0.85);
+      border: 1px solid var(--line-bright);
+      color: #f1f5f9;
+      align-self: flex-start;
+    }
+
+    .aura-msg.user {
+      background: rgba(13, 52, 64, 0.85);
+      border: 1px solid rgba(45, 212, 191, 0.4);
+      color: #f0fdf4;
+      align-self: flex-end;
+    }
+
+    #aura-chat-form {
+      display: flex;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    #aura-chat-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 1px solid var(--line-bright);
+      border-radius: 14px;
+      background: rgba(7, 13, 27, 0.85);
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    #aura-chat-input:focus {
+      border-color: #ffffff;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    }
+
+    #aura-chat-btn {
+      padding: 0 28px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #070b19;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #aura-chat-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .orbital-footer-bar {
+      text-align: center;
+      padding: 18px 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .nav-group { gap: 16px; }
+      .vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        flex-direction: column;
+        gap: 14px;
+        padding: 14px;
+      }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .search-box { width: 100%; }
+      .status-legend { justify-content: space-between; }
+      .top-banner-row, .vitals-grid, .charts-grid { grid-template-columns: minmax(0, 1fr); }
+      #aura-chat-form { flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+  <video class="bg-video" autoplay muted loop playsinline poster="assets/space-poster.jpg">
+    <source src="vedio/15562120-hd_1920_1080_24fps.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="bg-overlay"></div>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="nav-group">
+      <a href="home.html" class="nav-link">HOME</a>
+      <a href="emergency-ai.html" class="nav-link active">EMERGENCY HUB</a>
+    </div>
+
+    <div class="brand-logo-container">
+      <a href="#section-1" class="brand-lockup">
+        <span class="brand-text-left">COSMI</span>
+        <img src="vedio/logo1.png" alt="CosmiHealth Logo" class="nav-logo" onerror="this.style.display='none'" />
+        <span class="brand-text-right">HEALTH</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <a href="anatomy.html" class="nav-link">3D-BIO</a>
+      <a href="ai-men.html" class="nav-link">AI-MENTOR</a>
+    </div>
+  </nav>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <div class="dashboard-shell">
+    <main class="main-area">
+      <header class="topbar">
+        <div class="search-box">
+          <input type="search" id="metricSearchInput" placeholder="Search health metrics..." aria-label="Search health metrics">
+        </div>
+
+        <div class="status-legend" aria-label="Vital status legend">
+          <span data-status="stable">Stable</span>
+          <span data-status="optimal">Optimal</span>
+          <span data-status="attention">Attention</span>
+        </div>
+
+        <div class="user-profile">
+          <span class="user-name">Astronaut #01</span>
+          <div class="user-avatar" aria-label="Astronaut 01">A1</div>
+        </div>
+      </header>
+
+      <section class="top-banner-row">
+        <div class="glass-card ai-greeting-banner">
+          <div class="ai-aura-badge">AURA AI ASSISTANT</div>
+          <h2>Hello, I am Aura. Let's keep track of your health.</h2>
+          <p id="spaceEnvBanner">Space Telemetry: Monitoring Microgravity &amp; Cosmic Radiation via NASA HRP / CSA Models.</p>
+        </div>
+
+        <div class="glass-card score-panel">
+          <span class="score-title">WELLNESS SCORE</span>
+          <div class="score-date" id="currentDateDisplay">Loading Date...</div>
+          <div class="score-value"><span id="wellnessScoreVal">50</span> <small>/100</small></div>
+          <div class="streak" id="scoreStatusText" style="color: #fbbf24;">Attention: Yesterday's workouts missed</div>
+        </div>
+      </section>
+
+      <section class="main-content-grid">
+        <div class="vitals-grid" id="vitalsGrid">
+          <article class="glass-card metric-card" id="card-hr" data-status="stable">
+            <div class="metric-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            </div>
+            <div class="card-divider"></div>
+            <div class="metric-info">
+              <div class="title-value-row"><h4>Heart Rate</h4><span class="metric-value" id="val-hr">72 bpm</span></div>
+              <span class="metric-status" id="status-hr">Stable · Baseline</span>
+              <p>Resting cardiovascular telemetry.</p>
+              <div class="mini-track"><div class="mini-fill" id="bar-hr" style="width:72%"></div></div>
+            </div>
+          </article>
+
+          <article class="glass-card metric-card" id="card-bp" data-status="attention">
+            <div class="metric-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="card-divider"></div>
+            <div class="metric-info">
+              <div class="title-value-row"><h4>Blood Pressure</h4><span class="metric-value" id="val-bp">128/84</span></div>
+              <span class="metric-status" id="status-bp">Attention · Elevated</span>
+              <p>Cephalad fluid shift arterial pressure.</p>
+              <div class="mini-track"><div class="mini-fill" id="bar-bp" style="width:85%"></div></div>
+            </div>
+          </article>
+
+          <article class="glass-card metric-card" id="card-spo2" data-status="optimal">
+            <div class="metric-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <text x="6.8" y="15" font-size="7" fill="currentColor" stroke="none">O2</text>
+              </svg>
+            </div>
+            <div class="card-divider"></div>
+            <div class="metric-info">
+              <div class="title-value-row"><h4>Oxygen (SpO₂)</h4><span class="metric-value" id="val-spo2">98%</span></div>
+              <span class="metric-status" id="status-spo2">Optimal · Nominal</span>
+              <p>Cabin atmosphere oxygen saturation.</p>
+              <div class="mini-track"><div class="mini-fill" id="bar-spo2" style="width:98%"></div></div>
+            </div>
+          </article>
+
+          <article class="glass-card metric-card" id="card-temp" data-status="optimal">
+            <div class="metric-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M14 14.8V3.5a2.5 2.5 0 0 0-5 0v11.3a4.5 4.5 0 1 0 5 0z"/></svg>
+            </div>
+            <div class="card-divider"></div>
+            <div class="metric-info">
+              <div class="title-value-row"><h4>Body Temperature</h4><span class="metric-value" id="val-temp">36.6 °C</span></div>
+              <span class="metric-status" id="status-temp">Optimal · Nominal</span>
+              <p>Core thermoregulation reading.</p>
+              <div class="mini-track"><div class="mini-fill" id="bar-temp" style="width:66%"></div></div>
+            </div>
+          </article>
+
+          <article class="glass-card metric-card" id="card-muscle" data-status="attention">
+            <div class="metric-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M21 3l-6 6M3 21l6-6M14.5 3.5l6 6M3.5 14.5l6 6"/></svg>
+            </div>
+            <div class="card-divider"></div>
+            <div class="metric-info">
+              <div class="title-value-row"><h4>Muscle Activity</h4><span class="metric-value" id="val-muscle">Missed Yesterday</span></div>
+              <span class="metric-status" id="status-muscle">Attention · Countermeasure Needed</span>
+              <p>ARED resistance &amp; back stabilization log.</p>
+              <div class="mini-track"><div class="mini-fill" id="bar-muscle" style="width:25%"></div></div>
+            </div>
+          </article>
+
+          <article class="glass-card metric-card" id="card-water" data-status="stable">
+            <div class="metric-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2.7l5.7 5.7a8 8 0 1 1-11.4 0z"/></svg>
+            </div>
+            <div class="card-divider"></div>
+            <div class="metric-info">
+              <div class="title-value-row"><h4>Water Logged</h4><span class="metric-value" id="val-water">1.8 L</span></div>
+              <span class="metric-status" id="status-water">Stable · User Logged</span>
+              <p>Daily microgravity fluid intake target: 2.5 L.</p>
+              <div class="mini-track"><div class="mini-fill" id="bar-water" style="width:72%"></div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="aura-chat-section" aria-label="Aura AI Health & Space Countermeasure Agent">
+        <canvas id="meteor-canvas"></canvas>
+        <div class="aura-chat-content">
+          <div class="aura-section-header">
+            <div class="aura-section-title">
+              <div class="logo-icon" aria-hidden="true">✦</div>
+              <div>
+                <h3>AURA AI · BIOMEDICAL &amp; SPACE HAZARD AGENT</h3>
+                <span style="font-size: 12px; color: var(--muted);">Powered by NASA HRP 5 Hazards &amp; CSA Radiation Telemetry</span>
+              </div>
+            </div>
+            <div class="aura-header-actions">
+              <span class="aura-section-badge" id="radiationBadge">SOLAR RADIATION: MODERATE (Kp 4)</span>
+              <button type="button" class="reset-db-btn" onclick="resetCosmiDB()">RESET TELEMETRY</button>
+            </div>
+          </div>
+
+          <div class="aura-quick-prompts">
+            <button type="button" class="quick-chip" onclick="sendUserMessage('HR: 74, BP: 118/78, SpO2: 99, Temp: 36.6, Water: 2.4, Workout: Yes')">Quick Fill: Optimal Vitals</button>
+            <button type="button" class="quick-chip" onclick="sendUserMessage('HR: 96, BP: 138/90, SpO2: 95, Temp: 37.1, Water: 1.2, Workout: No')">Quick Fill: Elevated / Missed Workout</button>
+            <button type="button" class="quick-chip" onclick="sendUserMessage('I have a headache and blurry vision')">Symptom: Headache &amp; Blurry Vision</button>
+            <button type="button" class="quick-chip" onclick="sendUserMessage('I have lower back pain')">Symptom: Lower Back Pain</button>
+            <button type="button" class="quick-chip" onclick="sendUserMessage('I feel dizzy and have chest tightness')">Symptom: Dizziness &amp; Chest Tightness</button>
+          </div>
+
+          <div id="aura-chat-messages"></div>
+
+          <form id="aura-chat-form">
+            <input type="text" id="aura-chat-input" placeholder="Paste all vitals at once (e.g. HR: 75, BP: 120/80, SpO2: 98, Temp: 36.6, Water: 2.3, Workout: Yes) or describe symptoms..." autocomplete="off" required />
+            <button type="submit" id="aura-chat-btn">TRANSMIT</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="charts-grid" aria-label="Health trends">
+        <article class="glass-card chart-card">
+          <div class="chart-heading">
+            <h3>Vital Trends</h3>
+            <label>
+              <span hidden>Choose a health metric</span>
+              <select id="metricSelect" class="chart-select" aria-label="Choose a health metric">
+                <option value="heartRate">Heart Rate</option>
+                <option value="spo2">Oxygen (SpO₂)</option>
+                <option value="bloodPressure">Blood Pressure</option>
+                <option value="temperature">Body Temperature</option>
+              </select>
+            </label>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="vitalsChart" aria-label="Selected vital trend chart"></canvas>
+          </div>
+          <p class="chart-note">Live session telemetry synced with Aura AI single-packet intake.</p>
+        </article>
+
+        <article class="glass-card chart-card">
+          <div class="chart-heading">
+            <h3>Water Logged</h3>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="hydrationChart" aria-label="Water logged by day"></canvas>
+          </div>
+          <p class="chart-note">User-entered water intake compared against weekly baseline.</p>
+        </article>
+      </section>
+
+      <p class="disclaimer">
+        Prototype disclaimer: Grounded in NASA Human Research Program (HRP) &amp; Canadian Space Agency (CSA) educational resources. This software does not diagnose, treat, or replace advice from qualified aerospace medical professionals.
+      </p>
+
+      <div class="orbital-footer-bar">COSMIHEALTH &bull; 2026</div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+       const demoLabels = ["08:00", "10:00", "12:00", "14:00", "16:00", "Now"];
+
+    const demoVitals = {
+      heartRate: {
+        labels: ["Heart rate"],
+        units: ["bpm"],
+        values: [[68, 72, 70, 74, 71, 72]]
+      },
+      spo2: {
+        labels: ["SpO₂"],
+        units: ["%"],
+        values: [[98, 99, 98, 97, 99, 98]]
+      },
+      bloodPressure: {
+        labels: ["Systolic", "Diastolic"],
+        units: ["mmHg", "mmHg"],
+        values: [
+          [124, 128, 126, 130, 128, 128],
+          [82, 84, 83, 85, 84, 84]
+        ]
+      },
+      temperature: {
+        labels: ["Temperature"],
+        units: ["°C"],
+        values: [[36.5, 36.6, 36.6, 36.7, 36.6, 36.6]]
+      }
+    };
+
+    const lineColors = ["#38bdf8", "#34d399"];
+    const vitalsChart = new Chart(document.getElementById("vitalsChart"), {
+      type: "line",
+      data: { labels: demoLabels, datasets: [] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { labels: { color: "#aeb8c2", boxWidth: 10, usePointStyle: true } }
+        },
+        scales: {
+          x: { ticks: { color: "#aeb8c2" }, grid: { color: "rgba(148, 163, 184, 0.10)" } },
+          y: { ticks: { color: "#aeb8c2" }, grid: { color: "rgba(148, 163, 184, 0.10)" } }
+        }
+      }
+    });
+
+    function showVital(metric) {
+      const item = demoVitals[metric];
+      if (!item) return;
+      vitalsChart.data.datasets = item.values.map((values, index) => ({
+        label: `${item.labels[index]} (${item.units[index]})`,
+        data: values,
+        borderColor: lineColors[index],
+        backgroundColor: lineColors[index] + "22",
+        pointBackgroundColor: lineColors[index],
+        pointRadius: 3,
+        borderWidth: 2,
+        tension: 0.32,
+        fill: false
+      }));
+      vitalsChart.update();
+    }
+
+    document.getElementById("metricSelect").addEventListener("change", (e) => showVital(e.target.value));
+    showVital("heartRate");
+
+    const hydrationChart = new Chart(document.getElementById("hydrationChart"), {
+      type: "bar",
+      data: {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Today"],
+        datasets: [{
+          label: "Water logged (L)",
+          data: [1.8, 2.0, 1.7, 2.1, 2.0, 1.9, 1.8],
+          backgroundColor: "rgba(56, 189, 248, 0.62)",
+          borderColor: "#38bdf8",
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: "#aeb8c2", boxWidth: 10, usePointStyle: true } }
+        },
+        scales: {
+          x: { ticks: { color: "#aeb8c2" }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: "#aeb8c2" }, grid: { color: "rgba(148, 163, 184, 0.10)" } }
+        }
+      }
+    });
+
+    // --- 2. ANATOMY INSPECTOR (موجود لكن لا يظهر لأن body-panel مخفي) ---
+    function inspectOrgan(system) {
+      const info = {
+        neuro: [
+          "Neurological & Ocular System (NASA HRP Hazard: Gravity Fields)",
+          "Microgravity induces cephalad fluid shifts toward the head, increasing intracranial pressure and risking Spaceflight-Associated Neuro-ocular Syndrome (SANS)."
+        ],
+        cardio: [
+          "Cardiovascular & Radiation Telemetry (CSA / NASA HRP)",
+          "Space radiation and weightlessness alter arterial stiffness and orthostatic tolerance. Continuous HR and BP monitoring is mandatory."
+        ],
+        muscle: [
+          "Musculoskeletal System (ARED Countermeasure Protocol)",
+          "Without Earth's 1G load, astronauts lose 1–1.5% bone mineral density per month. Daily ARED resistance & spinal stabilization exercises are critical."
+        ]
+      };
+      const selected = info[system] || ["Biological Systems Model", "Select a point to inspect telemetry."];
+      document.getElementById("organTitle").textContent = selected[0];
+      document.getElementById("organDesc").textContent = selected[1];
+    }
+
+    // --- 3. DB + LIVE APP LOGIC ---
+    document.addEventListener("DOMContentLoaded", async function() {
+      const todayDate = new Date();
+      const yesterdayDate = new Date(todayDate);
+      yesterdayDate.setDate(todayDate.getDate() - 1);
+      const twoDaysAgoDate = new Date(todayDate);
+      twoDaysAgoDate.setDate(todayDate.getDate() - 2);
+
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      const todayFormatted = todayDate.toLocaleDateString('en-US', options);
+      const yesterdayFormatted = yesterdayDate.toLocaleDateString('en-US', options);
+      const twoDaysAgoFormatted = twoDaysAgoDate.toLocaleDateString('en-US', options);
+
+      document.getElementById("currentDateDisplay").textContent = todayFormatted;
+
+      const defaultCosmiDB = {
+        history: [
+          {
+            date: twoDaysAgoFormatted,
+            wellnessScore: 68,
+            workoutCompleted: true,
+            notes: "Completed 30m ARED squats; mild hydration deficit (1.9L)."
+          },
+          {
+            date: yesterdayFormatted,
+            wellnessScore: 50,
+            workoutCompleted: false,
+            notes: "Missed back stabilization and ARED resistance training."
+          }
+        ],
+        today: {
+          dateStr: todayFormatted,
+          wellnessScore: 50,
+          heartRate: 72,
+          bloodPressure: { sys: 128, dia: 84 },
+          spo2: 98,
+          temperature: 36.6,
+          waterLiters: 1.8,
+          workoutCompleted: false
+        }
+      };
+
+      let cosmiDB = JSON.parse(localStorage.getItem("cosmiHealthDB_v3")) || defaultCosmiDB;
+      cosmiDB.today.dateStr = todayFormatted;
+
+      function saveDB() {
+        localStorage.setItem("cosmiHealthDB_v3", JSON.stringify(cosmiDB));
+      }
+
+      let spaceEnv = {
+        kpIndex: 4.3,
+        radiationLevel: "ELEVATED (Kp 4.3 · Solar Particle Watch)",
+        microgravityState: "0.0001g Orbital Freefall (ISS Low-Earth Orbit)"
+      };
+
+      try {
+        const res = await fetch("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json");
+        if (res.ok) {
+          const data = await res.json();
+          const latest = data[data.length - 1];
+          const kp = parseFloat(latest[1]);
+          if (!isNaN(kp)) {
+            spaceEnv.kpIndex = kp;
+            spaceEnv.radiationLevel = kp >= 5
+              ? `HIGH STORM ALERT (Kp ${kp})`
+              : kp >= 3
+              ? `MODERATE / ELEVATED (Kp ${kp})`
+              : `NOMINAL / LOW (Kp ${kp})`;
+          }
+        }
+      } catch (err) {
+      }
+
+      document.getElementById("radiationBadge").textContent = `RADIATION: ${spaceEnv.radiationLevel}`;
+      document.getElementById("spaceEnvBanner").textContent =
+        `Orbital Status: ${spaceEnv.microgravityState} | Radiation: ${spaceEnv.radiationLevel} (Source: NASA HRP & CSA Telemetry)`;
+
+      function syncDashboardUI() {
+        const t = cosmiDB.today;
+
+        document.getElementById("val-hr").textContent = `${t.heartRate} bpm`;
+        const hrCard = document.getElementById("card-hr");
+        const hrStatus = document.getElementById("status-hr");
+        if (t.heartRate >= 60 && t.heartRate <= 85) {
+          hrCard.setAttribute("data-status", "optimal");
+          hrStatus.textContent = "Optimal · Resting Nominal";
+        } else if (t.heartRate > 100 || t.heartRate < 50) {
+          hrCard.setAttribute("data-status", "attention");
+          hrStatus.textContent = "Attention · Out of Range";
+        } else {
+          hrCard.setAttribute("data-status", "stable");
+          hrStatus.textContent = "Stable · Monitored";
+        }
+        document.getElementById("bar-hr").style.width = `${Math.min(100, Math.round((t.heartRate / 120) * 100))}%`;
+
+        document.getElementById("val-bp").textContent = `${t.bloodPressure.sys}/${t.bloodPressure.dia}`;
+        const bpCard = document.getElementById("card-bp");
+        const bpStatus = document.getElementById("status-bp");
+        if (t.bloodPressure.sys <= 120 && t.bloodPressure.dia <= 80) {
+          bpCard.setAttribute("data-status", "optimal");
+          bpStatus.textContent = "Optimal · Balanced";
+        } else if (t.bloodPressure.sys >= 135 || t.bloodPressure.dia >= 90) {
+          bpCard.setAttribute("data-status", "attention");
+          bpStatus.textContent = "Attention · High Cephalad Pressure";
+        } else {
+          bpCard.setAttribute("data-status", "stable");
+          bpStatus.textContent = "Stable · Mildly Elevated";
+        }
+        document.getElementById("bar-bp").style.width = `${Math.min(100, Math.round((t.bloodPressure.sys / 160) * 100))}%`;
+
+        document.getElementById("val-spo2").textContent = `${t.spo2}%`;
+        const spo2Card = document.getElementById("card-spo2");
+        const spo2Status = document.getElementById("status-spo2");
+        if (t.spo2 >= 96) {
+          spo2Card.setAttribute("data-status", "optimal");
+          spo2Status.textContent = "Optimal · Saturated";
+        } else if (t.spo2 >= 93) {
+          spo2Card.setAttribute("data-status", "stable");
+          spo2Status.textContent = "Stable · Monitor Cabin O2";
+        } else {
+          spo2Card.setAttribute("data-status", "attention");
+          spo2Status.textContent = "Attention · Hypoxia Alert";
+        }
+        document.getElementById("bar-spo2").style.width = `${t.spo2}%`;
+
+        document.getElementById("val-temp").textContent = `${t.temperature} °C`;
+        const tempCard = document.getElementById("card-temp");
+        const tempStatus = document.getElementById("status-temp");
+        if (t.temperature >= 36.1 && t.temperature <= 37.2) {
+          tempCard.setAttribute("data-status", "optimal");
+          tempStatus.textContent = "Optimal · Nominal";
+        } else {
+          tempCard.setAttribute("data-status", "attention");
+          tempStatus.textContent = "Attention · Thermal Drift";
+        }
+        document.getElementById("bar-temp").style.width = `${Math.min(100, Math.round(((t.temperature - 34) / 6) * 100))}%`;
+
+        const muscleCard = document.getElementById("card-muscle");
+        const muscleVal = document.getElementById("val-muscle");
+        const muscleStatus = document.getElementById("status-muscle");
+        if (t.workoutCompleted) {
+          muscleCard.setAttribute("data-status", "optimal");
+          muscleVal.textContent = "ARED Completed";
+          muscleStatus.textContent = "Optimal · Bone Load Maintained";
+          document.getElementById("bar-muscle").style.width = "100%";
+        } else {
+          muscleCard.setAttribute("data-status", "attention");
+          muscleVal.textContent = "Pending / Missed";
+          muscleStatus.textContent = "Attention · Countermeasure Required";
+          document.getElementById("bar-muscle").style.width = "25%";
+        }
+
+        document.getElementById("val-water").textContent = `${t.waterLiters} L`;
+        const waterCard = document.getElementById("card-water");
+        const waterStatus = document.getElementById("status-water");
+        if (t.waterLiters >= 2.2) {
+          waterCard.setAttribute("data-status", "optimal");
+          waterStatus.textContent = "Optimal · Hydrated";
+        } else if (t.waterLiters >= 1.6) {
+          waterCard.setAttribute("data-status", "stable");
+          waterStatus.textContent = "Stable · Target 2.5 L";
+        } else {
+          waterCard.setAttribute("data-status", "attention");
+          waterStatus.textContent = "Attention · Dehydration Risk";
+        }
+        document.getElementById("bar-water").style.width = `${Math.min(100, Math.round((t.waterLiters / 2.5) * 100))}%`;
+
+        let score = 40;
+        if (t.heartRate >= 55 && t.heartRate <= 90) score += 12;
+        if (t.bloodPressure.sys <= 125 && t.bloodPressure.dia <= 82) score += 12;
+        else if (t.bloodPressure.sys <= 135) score += 6;
+        if (t.spo2 >= 96) score += 12;
+        if (t.temperature >= 36.1 && t.temperature <= 37.3) score += 8;
+        if (t.waterLiters >= 2.0) score += 10;
+        else if (t.waterLiters >= 1.5) score += 5;
+        if (t.workoutCompleted) score += 16;
+
+        t.wellnessScore = Math.min(100, score);
+        document.getElementById("wellnessScoreVal").textContent = t.wellnessScore;
+
+        const scoreText = document.getElementById("scoreStatusText");
+        if (t.wellnessScore >= 80) {
+          scoreText.style.color = "#43d6b3";
+          scoreText.textContent = "Optimal: Flight Readiness Nominal";
+        } else if (t.wellnessScore >= 60) {
+          scoreText.style.color = "#71d6ff";
+          scoreText.textContent = "Stable: Complete ARED Challenge for Peak Score";
+        } else {
+          scoreText.style.color = "#f7cf5a";
+          scoreText.textContent = "Attention: Yesterday's workouts missed — Action Required";
+        }
+
+        demoVitals.heartRate.values[0][5] = t.heartRate;
+        demoVitals.spo2.values[0][5] = t.spo2;
+        demoVitals.bloodPressure.values[0][5] = t.bloodPressure.sys;
+        demoVitals.bloodPressure.values[1][5] = t.bloodPressure.dia;
+        demoVitals.temperature.values[0][5] = t.temperature;
+        showVital(document.getElementById("metricSelect").value);
+
+        hydrationChart.data.datasets[0].data[6] = t.waterLiters;
+        hydrationChart.update();
+
+        saveDB();
+      }
+
+      syncDashboardUI();
+
+      // --- 4. AURA SINGLE-MESSAGE PARSER ---
+      const chatMessages = document.getElementById("aura-chat-messages");
+      const chatForm = document.getElementById("aura-chat-form");
+      const chatInput = document.getElementById("aura-chat-input");
+
+      function appendMessage(sender, htmlContent) {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `aura-msg ${sender}`;
+        msgDiv.innerHTML = htmlContent;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function sendSingleBatchPrompt() {
+        appendMessage("ai",
+          `<strong>[DAILY ORBITAL TELEMETRY PACKET · ${todayFormatted}]</strong><br>` +
+          `Historical Log: Yesterday (<em>${cosmiDB.history[1].date}</em>), your Wellness Score was <strong>${cosmiDB.history[1].wellnessScore}/100</strong> due to missed ARED &amp; back workouts.<br><br>` +
+          `Send me <strong>all your vitals in one single message</strong> using this format (or type naturally):<br>` +
+          `• <strong>Heart Rate (bpm)</strong><br>` +
+          `• <strong>Blood Pressure (sys/dia)</strong><br>` +
+          `• <strong>Oxygen SpO₂ (%)</strong><br>` +
+          `• <strong>Body Temperature (°C)</strong><br>` +
+          `• <strong>Water Logged (Liters)</strong><br>` +
+          `• <strong>Workout Completed (Yes / No)</strong><br><br>` +
+          `<em>Example Reply:</em> <code>HR: 74, BP: 118/78, SpO2: 99, Temp: 36.6, Water: 2.4, Workout: Yes</code>`
+        );
+      }
+
+      function parseBatchVitals(text) {
+        let updatedCount = 0;
+        const lower = text.toLowerCase();
+
+        const bpMatch = text.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
+        if (bpMatch) {
+          cosmiDB.today.bloodPressure = {
+            sys: parseInt(bpMatch[1], 10),
+            dia: parseInt(bpMatch[2], 10)
+          };
+          updatedCount++;
+        }
+
+        const hrMatch = lower.match(/(?:hr|heart\s*rate|pulse)[^\d]{0,10}(\d{2,3})/) || lower.match(/(\d{2,3})\s*bpm/);
+        if (hrMatch) {
+          const val = parseInt(hrMatch[1], 10);
+          if (val >= 35 && val <= 220) {
+            cosmiDB.today.heartRate = val;
+            updatedCount++;
+          }
+        }
+
+        const spo2Match = lower.match(/(?:spo2|oxygen|o2)[^\d]{0,10}(\d{2,3})/) || lower.match(/(\d{2,3})\s*%/);
+        if (spo2Match) {
+          const val = parseInt(spo2Match[1], 10);
+          if (val >= 70 && val <= 100) {
+            cosmiDB.today.spo2 = val;
+            updatedCount++;
+          }
+        }
+
+        const tempMatch = lower.match(/(?:temp|temperature)[^\d]{0,10}(\d{2}(?:\.\d)?)/) || lower.match(/(\d{2}\.\d)\s*(?:°c|c\b)?/);
+        if (tempMatch) {
+          const val = parseFloat(tempMatch[1]);
+          if (val >= 34 && val <= 42) {
+            cosmiDB.today.temperature = val;
+            updatedCount++;
+          }
+        }
+
+        const waterMatch = lower.match(/(?:water|hydration)[^\d]{0,10}(\d(?:\.\d)?)/) || lower.match(/(\d(?:\.\d)?)\s*(?:l\b|liters?)/);
+        if (waterMatch) {
+          const val = parseFloat(waterMatch[1]);
+          if (val >= 0 && val <= 10) {
+            cosmiDB.today.waterLiters = val;
+            updatedCount++;
+          }
+        }
+
+        const workoutMatch = lower.match(/(?:workout|exercise|ared)[^a-z]{0,10}(yes|no|done|completed|missed)/);
+        if (workoutMatch) {
+          const ans = workoutMatch[1];
+          cosmiDB.today.workoutCompleted = (ans === "yes" || ans === "done" || ans === "completed");
+          updatedCount++;
+        }
+
+        return updatedCount;
+      }
+
+      function buildChallengeAndSymptomPrompt() {
+        const t = cosmiDB.today;
+        const yesterdayMissed = !cosmiDB.history[1].workoutCompleted;
+
+        return (
+          `✅ <strong>ALL TELEMETRY BOXES UPDATED!</strong><br>` +
+          `• <strong>Date:</strong> ${todayFormatted} | <strong>New Wellness Score:</strong> <strong>${t.wellnessScore}/100</strong> (Yesterday: ${cosmiDB.history[1].wellnessScore}/100)<br><br>` +
+          `<strong>🚀 TODAY'S ORBITAL COUNTERMEASURE CHALLENGE</strong><br>` +
+          `• <strong>Microgravity Status:</strong> ${spaceEnv.microgravityState}<br>` +
+          `• <strong>Radiation Telemetry (CSA / NASA HRP):</strong> ${spaceEnv.radiationLevel}<br>` +
+          `• <strong>Mission Directive:</strong> ${yesterdayMissed ? "Since yesterday's resistance session was missed, bone mineral loss and spinal elongation risks are elevated." : "Maintain your current musculoskeletal load trajectory."} Complete <strong>20 mins on ARED (Squats &amp; Deadlifts)</strong> + <strong>10 mins Spinal Stabilization</strong> and hydrate to <strong>2.5 L</strong>.<br>` +
+          `<a class="youtube-link" href="https://www.youtube.com/watch?v=9_3-1z6k46M" target="_blank" rel="noopener">▶ NASA: Exercising in Space (ARED)</a>` +
+          `<a class="youtube-link" href="https://www.youtube.com/watch?v=x0g0_62G6oI" target="_blank" rel="noopener">▶ CSA: Astronaut Health &amp; Microgravity Training</a><br><br>` +
+          `<strong>🩺 SYMPTOM &amp; SPACE HAZARD CHECK:</strong><br>` +
+          `Are you feeling any pain or unusual symptoms right now? (e.g., <em>headache, blurry vision, lower back pain, dizziness, chest tightness</em> — or reply <strong>"none"</strong>).`
+        );
+      }
+
+      function analyzeSpaceSymptom(text) {
+        const q = text.toLowerCase();
+
+        if (q === "none" || q === "no" || q.includes("good") || q.includes("fine") || q.includes("healthy")) {
+          return `<strong>✅ STATUS: NOMINAL (NO ACUTE SYMPTOMS)</strong><br>` +
+                 `All reported parameters align with healthy orbital adaptation. Continue following NASA HRP hydration and ARED countermeasure schedules while I monitor cabin radiation (${spaceEnv.radiationLevel}).`;
+        }
+
+        if (q.includes("chest") || q.includes("breathe") || q.includes("breath") || q.includes("faint") || q.includes("vision loss")) {
+          return `<strong>🚨 CLASSIFICATION: MEDICAL EMERGENCY — IMMEDIATE FLIGHT SURGEON ALERT</strong><br>` +
+                 `• <strong>Spaceflight Context (NASA HRP Hazard — Hostile/Closed Environments):</strong> Chest tightness, dyspnea, or acute vision loss in orbit can indicate cabin decompression sickness, toxic gas exposure, cardiac arrhythmia, or severe intracranial hypertension.<br>` +
+                 `• <strong>Immediate Action:</strong> Halt all physical exertion immediately, verify cabin O₂ partial pressure (current SpO₂: ${cosmiDB.today.spo2}%), don emergency oxygen mask if required, and initiate direct telemetry link with Mission Control Flight Surgeon.`;
+        }
+
+        if (q.includes("headache") || q.includes("vision") || q.includes("blurry") || q.includes("eye") || q.includes("pressure")) {
+          return `<strong>⚠️ CLASSIFICATION: SPACE ADAPTATION / SANS WATCH (MODERATE ATTENTION)</strong><br>` +
+                 `• <strong>Spaceflight Meaning (NASA HRP Hazard — Gravity Fields):</strong> In 0g, ~2 liters of fluid shift from the lower body toward the head (<em>cephalad fluid shift</em>), elevating intracranial pressure and pressing on the optic nerve — known as <strong>SANS (Spaceflight-Associated Neuro-ocular Syndrome)</strong>.<br>` +
+                 `• <strong>Prescribed Countermeasure:</strong> Perform Lower Body Negative Pressure (LBNP) protocol if available, complete ocular check, and avoid high-sodium rations today.`;
+        }
+
+        if (q.includes("back") || q.includes("spine") || q.includes("muscle") || q.includes("bone") || q.includes("ache")) {
+          return `<strong>⚠️ CLASSIFICATION: MICROGRAVITY SPINAL ELONGATION (CHALLENGE LINKED)</strong><br>` +
+                 `• <strong>Spaceflight Meaning (NASA HRP &amp; CSA Research):</strong> Without gravitational compression, intervertebral discs absorb fluid and expand, lengthening the spine by up to 5 cm and causing <em>Space Adaptation Back Pain</em> — worsened by missed ARED loading.<br>` +
+                 `• <strong>Prescribed Countermeasure:</strong> Execute gentle fetal-tuck spinal decompression stretches followed by controlled ARED core stabilization exercises (see linked NASA/CSA training videos above).`;
+        }
+
+        if (q.includes("dizzy") || q.includes("nausea") || q.includes("motion") || q.includes("vertigo")) {
+          return `<strong>⚠️ CLASSIFICATION: SPACE MOTION SICKNESS / VESTIBULAR CONFLICT</strong><br>` +
+                 `• <strong>Spaceflight Meaning (NASA HRP Hazard — Gravity Fields):</strong> In microgravity, the inner ear's otolith organs lose gravitational orientation cues, creating sensory conflict with visual input.<br>` +
+                 `• <strong>Prescribed Countermeasure:</strong> Minimize rapid head pitch/yaw movements, anchor feet to handrails for spatial reference, and hydrate to 2.5 L.`;
+        }
+
+        return `<strong>🔍 BIOMEDICAL EVALUATION (NASA HRP / CSA KNOWLEDGE BASE):</strong><br>` +
+               `Symptom logged: <em>"${text}"</em>. Under current orbital conditions (${spaceEnv.microgravityState}, Radiation: ${spaceEnv.radiationLevel}), monitor this symptom closely. If it intensifies or pairs with fever (>37.8°C) or SpO₂ drop (<94%), escalate to Flight Surgeon emergency protocol immediately.`;
+      }
+
+      window.sendUserMessage = function(text) {
+        appendMessage("user", text);
+
+        setTimeout(() => {
+          const parsedFields = parseBatchVitals(text);
+          if (parsedFields >= 2) {
+            syncDashboardUI();
+            appendMessage("ai", buildChallengeAndSymptomPrompt());
+          } else {
+            appendMessage("ai", analyzeSpaceSymptom(text));
+          }
+        }, 400);
+      };
+
+      chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const val = chatInput.value.trim();
+        if (!val) return;
+        chatInput.value = "";
+        sendUserMessage(val);
+      });
+
+      document.getElementById("metricSearchInput").addEventListener("input", function(e) {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll(".metric-card").forEach(card => {
+          card.style.display = card.textContent.toLowerCase().includes(term) ? "flex" : "none";
+        });
+      });
+
+      window.resetCosmiDB = function() {
+        localStorage.removeItem("cosmiHealthDB_v3");
+        location.reload();
+      };
+
+      const meteorCanvas = document.getElementById("meteor-canvas");
+      if (meteorCanvas) {
+        const ctx = meteorCanvas.getContext("2d");
+        function resizeCanvas() {
+          meteorCanvas.width = meteorCanvas.offsetWidth;
+          meteorCanvas.height = meteorCanvas.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        const meteors = Array.from({ length: 16 }, () => ({
+          x: Math.random() * meteorCanvas.width,
+          y: Math.random() * meteorCanvas.height,
+          length: Math.random() * 80 + 20,
+          speed: Math.random() * 2 + 0.8,
+          opacity: Math.random() * 0.45 + 0.1
+        }));
+
+        function drawMeteors() {
+          ctx.clearRect(0, 0, meteorCanvas.width, meteorCanvas.height);
+          ctx.strokeStyle = "rgba(56, 189, 248, 0.42)";
+          ctx.lineWidth = 1;
+
+          meteors.forEach(m => {
+            ctx.beginPath();
+            ctx.globalAlpha = m.opacity;
+            ctx.moveTo(m.x, m.y);
+            ctx.lineTo(m.x - m.length * 0.7, m.y + m.length * 0.7);
+            ctx.stroke();
+
+            m.x += m.speed;
+            m.y -= m.speed;
+
+            if (m.x > meteorCanvas.width + 100 || m.y < -100) {
+              m.x = Math.random() * meteorCanvas.width;
+              m.y = meteorCanvas.height + 50;
+            }
+          });
+          requestAnimationFrame(drawMeteors);
+        }
+        drawMeteors();
+      }
+
+      sendSingleBatchPrompt();
+    });
+  </script>
+</body>
+</html>

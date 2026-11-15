@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#020611" />
+    <meta
+      name="description"
+      content="EMERGENCY AI PILOT is a medical emergency decision-support interface for astronauts, focused on triage, symptom review, and urgent care guidance."
+    />
+    <title>EMERGENCY AI PILOT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="emergency-ai.css" />
+  </head>
+  <body>
+    <canvas class="starfield" id="starfield" aria-hidden="true"></canvas>
+    <div class="emergency-background" aria-hidden="true">
+      <video class="emergency-background-video" autoplay muted loop playsinline preload="none">
+        <source src="vedio/7169887-ba.mp4" type="video/mp4" />
+      </video>
+      <div class="emergency-background-overlay"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="top-status">
+        <span class="status-orb"></span><span class="mono">CREW SUPPORT<br />SIMULATION</span>
+      </div>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="home.html">Home</a>
+        <a class="brand-logo" href="index1.html#section-1" aria-label="COSMIHEALTH home">COSMIHEALTH</a>
+        <a href="bio.html">Health Hub</a>
+        <a href="anatomy.html">3D-Bio</a>
+        <a href="ai-men.html">AI-Mental</a>
+        <a href="emergency-ai.html">Emergency AI</a>
+      </nav>
+      <button class="api-status" type="button" aria-label="Emergency AI pilot status">
+        <span class="api-status-dot"></span><span id="statusText">SIM MODE</span>
+      </button>
+    </header>
+
+    <section class="emergency-hero" id="emergency-hero" aria-labelledby="emergencyHeroTitle">
+      <div class="emergency-hero-content">
+        <h2 id="emergencyHeroTitle">
+          Autonomous <span>Emergency</span> Telemetry<br class="desktop-break" /> for the Void Beyond
+        </h2>
+        <p>
+          A predictive multi-agent intelligence watching over astronauts in the silence of deep
+          space — detecting, analyzing, and responding to medical emergencies before they ever
+          become critical.
+        </p>
+      </div>
+    </section>
+
+    <main class="emergency-page">
+      <div class="page-header">
+        <div>
+          <div class="eyebrow">Emergency support</div>
+          <h1 class="page-title">EMERGENCY AI <span>PILOT</span></h1>
+        </div>
+        <div class="header-status"><span class="pulse"></span> AI SUPPORT READY</div>
+      </div>
+
+      <p class="page-subtitle">
+        Medical emergency triage support for astronauts. This interface helps the crew identify warning signs,
+        review vital signs, assess urgency, and determine whether immediate medical coordination is required.
+      </p>
+
+      <div class="dashboard-shell" id="assessment">
+        <aside class="panel ai-panel">
+          <div class="panel-header">
+            <h3>AI assistant profile</h3>
+            <span class="mono tiny">PROTOTYPE</span>
+          </div>
+
+          <div class="ai-profile">
+            <div class="ai-avatar">✚</div>
+            <div>
+              <h4>MEDICAL TRIAGE ASSIST</h4>
+              <p class="ai-status">Decision support only · not a clinician</p>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-card">
+              <span class="label">Status</span>
+              <strong>LIVE</strong>
+              <span>Prototype mode</span>
+            </div>
+            <div class="metric-card">
+              <span class="label">Guidance</span>
+              <strong>SAFE</strong>
+              <span>Risk-aware</span>
+            </div>
+            <div class="metric-card">
+              <span class="label">Alerts</span>
+              <strong>0</strong>
+              <span>Unresolved</span>
+            </div>
+          </div>
+
+          <div class="app-notice">
+            <strong>IMPORTANT:</strong> This assistant is designed for medical symptom review and urgent guidance support only.
+            It does not diagnose illness, replace a physician, or override mission medical procedures.
+          </div>
+        </aside>
+
+        <section class="panel assessment-panel" aria-live="polite">
+          <div id="riskBanner" class="risk-banner low">
+            <div>
+              <span class="risk-label">Urgency</span>
+              <div id="riskLevel" class="risk-level">LOW RISK</div>
+            </div>
+            <div class="risk-score">
+              <strong id="riskScore">12</strong>
+              <span>out of 100</span>
+            </div>
+          </div>
+
+          <p id="riskSummary" class="risk-summary">
+            No emergency data entered yet. Begin with heart rate, oxygen, blood pressure, and symptoms to assess the situation.
+          </p>
+
+          <div class="risk-causes">
+            <h4>Clinical indicators</h4>
+            <ul id="riskReasons">
+              <li>Awaiting clinical input.</li>
+              <li>The astronaut should continue routine monitoring until the data are collected.</li>
+            </ul>
+          </div>
+
+          <div class="recommendations">
+            <h4>Recommended actions</h4>
+            <ol id="recommendedActions">
+              <li>Enter the current health measurements.</li>
+              <li>Add symptoms and duration.</li>
+              <li>Review for warning signs before the next action.</li>
+            </ol>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel nasa-research-panel" aria-labelledby="nasaResearchHeading">
+        <div class="panel-header">
+          <h3 id="nasaResearchHeading">NASA research references</h3>
+          <span class="mono tiny">NASA NTRS · LIVE SEARCH</span>
+        </div>
+        <p class="nasa-research-disclaimer">
+          Search public NASA Technical Reports Server records for background research. This search
+          uses only the topic you select—symptoms, notes, and vital signs are never sent. Papers
+          are research context, not diagnosis or emergency guidance.
+        </p>
+        <form class="nasa-research-form" id="nasaResearchForm">
+          <label for="nasaResearchTopic">Research topic</label>
+          <select id="nasaResearchTopic" name="topic">
+            <option value="space-medicine">Space medicine</option>
+            <option value="cardiovascular">Cardiovascular health</option>
+            <option value="respiratory">Respiratory health</option>
+            <option value="human-spaceflight">Human spaceflight health</option>
+          </select>
+          <button class="primary-button" id="nasaResearchSubmit" type="submit">Search NASA NTRS</button>
+        </form>
+        <p class="nasa-research-status" id="nasaResearchStatus" role="status" aria-live="polite">
+          Choose a topic to search NASA's public research catalog.
+        </p>
+        <div class="nasa-research-results" id="nasaResearchResults" aria-live="polite"></div>
+        <p class="nasa-research-attribution">
+          NASA NTRS is a public research catalog. COSMIHEALTH is an independent prototype and is
+          not affiliated with or endorsed by NASA.
+        </p>
+      </section>
+
+      <div class="lower-grid">
+        <section class="panel chat-panel">
+          <div class="panel-header">
+            <h3>Clinical conversation</h3>
+            <span class="mono tiny">ALERTS</span>
+          </div>
+
+          <div id="chatWindow" class="chat-window" aria-live="polite"></div>
+
+          <form id="chatForm" class="chat-form">
+            <textarea id="chatInput" placeholder="Describe the astronaut’s symptoms, onset, or concern..." aria-label="Describe current symptoms"></textarea>
+            <button class="primary-button" type="submit">Send</button>
+          </form>
+        </section>
+
+        <section class="panel form-panel">
+          <h3>Health intake</h3>
+          <form id="medicalForm" class="medical-form">
+            <div class="field">
+              <label for="heartRate">Heart rate (BPM)</label>
+              <input id="heartRate" name="heartRate" type="number" min="0" max="220" step="1" placeholder="e.g. 72" />
+            </div>
+
+            <div class="field">
+              <label for="systolic">Blood pressure (mmHg)</label>
+              <input id="systolic" name="systolic" type="number" min="40" max="220" step="1" placeholder="e.g. 118" />
+            </div>
+
+            <div class="field">
+              <label for="oxygen">Oxygen saturation (%)</label>
+              <input id="oxygen" name="oxygen" type="number" min="50" max="100" step="1" placeholder="e.g. 97" />
+            </div>
+
+            <div class="field">
+              <label for="temperature">Body temperature (°C)</label>
+              <input id="temperature" name="temperature" type="number" min="30" max="45" step="0.1" placeholder="e.g. 36.8" />
+            </div>
+
+            <div class="field">
+              <label for="glucose">Blood glucose (mg/dL)</label>
+              <input id="glucose" name="glucose" type="number" min="20" max="500" step="1" placeholder="e.g. 94" />
+            </div>
+
+            <div class="field">
+              <label for="durationValue">Symptom duration</label>
+              <div class="duration-inputs" style="display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px;">
+                <input id="durationValue" name="durationValue" type="number" min="0" step="1" placeholder="Duration" />
+                <select id="durationUnit" name="durationUnit" aria-label="Symptom duration unit">
+                  <option value="">Unit</option>
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                  <option value="days">Days</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label for="symptoms">Current symptoms</label>
+              <textarea id="symptoms" name="symptoms" placeholder="Describe chest pain, dizziness, shortness of breath, nausea, fatigue, or other concerns..."></textarea>
+            </div>
+
+            <div class="field full">
+              <label for="notes">Additional medical notes</label>
+              <textarea id="notes" name="notes" placeholder="Any important context such as recent exertion, injury, medication use, or baseline concerns..."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="baselineHeartRate">Baseline heart rate (optional)</label>
+              <input id="baselineHeartRate" name="baselineHeartRate" type="number" min="0" max="220" step="1" placeholder="e.g. 66" />
+            </div>
+
+            <div class="field">
+              <label for="baselineSystolic">Baseline BP (optional)</label>
+              <input id="baselineSystolic" name="baselineSystolic" type="number" min="40" max="220" step="1" placeholder="e.g. 110" />
+            </div>
+
+            <div class="field">
+              <label for="baselineOxygen">Baseline oxygen (optional)</label>
+              <input id="baselineOxygen" name="baselineOxygen" type="number" min="50" max="100" step="1" placeholder="e.g. 98" />
+            </div>
+
+            <div class="field">
+              <label for="baselineTemperature">Baseline temperature (optional)</label>
+              <input id="baselineTemperature" name="baselineTemperature" type="number" min="30" max="45" step="0.1" placeholder="e.g. 36.7" />
+            </div>
+
+            <div class="field full">
+              <div class="form-actions">
+                <button class="secondary-button" id="resetAssessment" type="button">Reset</button>
+                <button class="primary-button" type="submit">Run assessment</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <video
+        class="footer-bg-media"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="none"
+        poster="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&amp;fit=crop&amp;w=2022&amp;q=85"
+        aria-label="NASA imagery of Earth from orbit"
+      >
+        <source
+          src="https://images-assets.nasa.gov/video/Earth%20Views%20from%20the%20International%20Space%20Station/Earth%20Views%20from%20the%20International%20Space%20Station~small.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <div class="footer-dark-overlay"></div>
+      <div class="footer-container">
+        <div class="footer-content-row">
+          <div class="footer-col footer-left">
+            <h3 class="footer-logo">COSMIHEALTH</h3>
+            <p class="footer-desc">
+              An independent space-health and crew-support prototype for the NASA Space Apps
+              Challenge. Health data is manually entered; no biometric sensors are connected.
+            </p>
+            <span class="footer-unaffiliated mono">INDEPENDENT DEMONSTRATION · NOT AFFILIATED WITH NASA</span>
+          </div>
+          <div class="footer-col footer-center">
+            <div class="footer-emblem">
+              <div class="medical-star-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2v20M2 12h20"></path>
+                </svg>
+              </div>
+              <span class="emblem-title">Cosmic Vision</span>
+            </div>
+            <p class="emblem-sub">Space Medicine &amp; Crew Support</p>
+          </div>
+          <div class="footer-col footer-right">
+            <div class="footer-nav-group">
+              <h4>Navigation</h4>
+              <ul>
+                <li><a href="index1.html#section-1">Home</a></li>
+                <li><a href="index1.html#section-2">Health Hub</a></li>
+                <li><a href="anatomy.html">3D-Bio</a></li>
+                <li><a href="index1.html#training">Practice scenarios</a></li>
+                <li><a href="index1.html#agents">AI-Crew</a></li>
+                <li><a href="emergency-ai.html">Emergency AI</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom-row">
+          <p class="footer-copy">&copy; 2026 COSMIHEALTH. Educational demonstration only.</p>
+          <p class="footer-team">Research context only. <span>Human care first.</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="emergency-ai.js"></script>
+  </body>
+</html>
