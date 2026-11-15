@@ -67,6 +67,119 @@
         linear-gradient(180deg, rgba(7, 11, 25, 0.25), rgba(7, 11, 25, 0.65));
     }
 
+    body::before,
+    body::after {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      content: "";
+      pointer-events: none;
+    }
+
+    body::before {
+      opacity: 0.68;
+      background-image:
+        radial-gradient(1.5px 1.5px at 30px 45px, #fff, transparent 2px),
+        radial-gradient(2px 2px at 120px 170px, #7dd3fc, transparent 3px),
+        radial-gradient(1.5px 1.5px at 210px 90px, #fff, transparent 2px),
+        radial-gradient(1px 1px at 170px 25px, #bae6fd, transparent 2px);
+      background-size: 220px 190px;
+      animation: starDrift 75s linear infinite, starTwinkle 5s ease-in-out infinite;
+    }
+
+    body::after {
+      opacity: 0.38;
+      background-image:
+        radial-gradient(2.5px 2.5px at 70px 110px, #fff, transparent 4px),
+        radial-gradient(1.5px 1.5px at 190px 35px, #38bdf8, transparent 3px),
+        radial-gradient(1px 1px at 300px 240px, #e0f2fe, transparent 2px);
+      background-size: 320px 270px;
+      animation: starDrift 110s linear infinite reverse, starTwinkle 7s ease-in-out infinite reverse;
+    }
+
+    .space-floaters {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .space-planet,
+    .space-moon,
+    .space-orbit {
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+    }
+
+    .space-planet {
+      top: 21%;
+      right: 7%;
+      width: 112px;
+      aspect-ratio: 1;
+      border: 1px solid rgba(125, 211, 252, 0.72);
+      background: radial-gradient(circle at 32% 28%, rgba(186, 230, 253, 0.82), rgba(56, 189, 248, 0.3) 42%, rgba(9, 20, 45, 0.1) 72%);
+      box-shadow: inset -14px -10px 24px rgba(2, 6, 23, 0.46), 0 0 42px rgba(56, 189, 248, 0.34);
+      animation: planetFloat 9s ease-in-out infinite;
+    }
+
+    .space-orbit {
+      top: 23%;
+      right: 4.5%;
+      width: 166px;
+      height: 72px;
+      border: 1px solid rgba(125, 211, 252, 0.44);
+      transform: rotate(-24deg);
+      animation: orbitGlow 5s ease-in-out infinite;
+    }
+
+    .space-moon {
+      bottom: 17%;
+      left: 4%;
+      width: 40px;
+      aspect-ratio: 1;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), rgba(148, 163, 184, 0.28) 65%, transparent);
+      box-shadow: 0 0 30px rgba(148, 213, 255, 0.42);
+      animation: planetFloat 7s ease-in-out infinite reverse;
+    }
+
+    @keyframes starDrift {
+      from { background-position: 0 0; }
+      to { background-position: 260px 220px; }
+    }
+
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 0.48; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes planetFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -26px; }
+    }
+
+    @keyframes orbitGlow {
+      0%, 100% { opacity: 0.42; scale: 1; }
+      50% { opacity: 0.95; scale: 1.12; }
+    }
+
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 12px rgba(56, 189, 248, 0.2); }
+      50% { text-shadow: 0 0 26px rgba(56, 189, 248, 0.62); }
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(56, 189, 248, 0.12); }
+      50% { box-shadow: 0 0 24px rgba(56, 189, 248, 0.45); }
+    }
+
+    @keyframes cardFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -8px; }
+    }
+
     /* استخدام الخط الناعم العصري في كل النصوص والعناوين والأزرار */
     h1, h2, h3, h4, .score-value, .metric-value, .ai-aura-badge, .score-title, .aura-section-badge, #aura-chat-btn, .nav-link, .brand-lockup, .reset-db-btn, .quick-chip {
       font-family: "Outfit", sans-serif;
@@ -145,6 +258,7 @@
       color: #ffffff;
       font-size: 15px;
       font-weight: 700;
+      animation: badgePulse 4s ease-in-out infinite;
       letter-spacing: 0.18em;
     }
 
@@ -158,6 +272,10 @@
       padding: 2px;
       background: #070b19;
       transition: transform 0.35s ease;
+    }
+
+    .brand-lockup {
+      animation: textGlow 6s ease-in-out infinite;
     }
 
     .brand-lockup:hover .nav-logo {
@@ -318,6 +436,7 @@
       font-size: clamp(18px, 2.1vw, 24px);
       font-weight: 700;
       line-height: 1.4;
+      animation: textGlow 5s ease-in-out infinite;
     }
 
     .ai-greeting-banner p,
@@ -357,6 +476,7 @@
       font-size: 36px;
       font-weight: 800;
       text-shadow: 0 0 20px var(--cyan-glow);
+      animation: textGlow 4.5s ease-in-out infinite;
     }
 
     .score-value small {
@@ -386,6 +506,15 @@
       background: var(--panel);
       border: 1px solid var(--line);
       transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      animation: cardFloat 7s ease-in-out infinite;
+    }
+
+    .metric-card:nth-child(2n) {
+      animation-delay: -3.5s;
+    }
+
+    .metric-card:nth-child(3n) {
+      animation-delay: -1.75s;
     }
 
     .metric-card:hover {
@@ -732,16 +861,60 @@
       .top-banner-row, .vitals-grid, .charts-grid { grid-template-columns: minmax(0, 1fr); }
       #aura-chat-form { flex-direction: column; }
     }
+
+    @media (max-width: 640px) {
+      .space-planet {
+        top: 18%;
+        right: -24px;
+        width: 72px;
+      }
+
+      .space-orbit {
+        top: 20%;
+        right: -42px;
+        width: 130px;
+        height: 56px;
+      }
+
+      .space-moon {
+        bottom: 10%;
+        left: -8px;
+      }
+
+      .aura-chat-section {
+        padding: 20px;
+      }
+
+      .orbital-footer-bar {
+        letter-spacing: 0.16em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 
 <body>
   <video class="bg-video" autoplay muted loop playsinline poster="assets/space-poster.jpg">
-    <source src="vedio/15562120-hd_1920_1080_24fps.mp4" type="video/mp4">
+    <source src="12638483_2088_720_60fps (1).mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
   <div class="bg-overlay"></div>
+  <div class="space-floaters" aria-hidden="true">
+    <span class="space-planet"></span>
+    <span class="space-orbit"></span>
+    <span class="space-moon"></span>
+  </div>
 
   <!-- TOP NAVBAR -->
   <nav class="navbar" aria-label="Main navigation">
@@ -753,7 +926,7 @@
     <div class="brand-logo-container">
       <a href="#section-1" class="brand-lockup">
         <span class="brand-text-left">COSMI</span>
-        <img src="vedio/logo1.png" alt="CosmiHealth Logo" class="nav-logo" onerror="this.style.display='none'" />
+        <img src="logo1.png" alt="CosmiHealth Logo" class="nav-logo" onerror="this.style.display='none'" />
         <span class="brand-text-right">HEALTH</span>
       </a>
     </div>
@@ -889,7 +1062,7 @@
         <div class="aura-chat-content">
           <div class="aura-section-header">
             <div class="aura-section-title">
-              <div class="logo-icon" aria-hidden="true">✦</div>
+              <div class="logo-icon" aria-hidden="true"></div>
               <div>
                 <h3>AURA AI · BIOMEDICAL &amp; SPACE HAZARD AGENT</h3>
                 <span style="font-size: 12px; color: var(--muted);">Powered by NASA HRP 5 Hazards &amp; CSA Radiation Telemetry</span>
